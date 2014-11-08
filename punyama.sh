@@ -188,29 +188,25 @@ while read date time nick msg; do
 		# TODO: Rice this with color.
 		elif [[ $msg == ".grep "* ]]; then
 			word=$(echo $msg | cut -d " " -f 2-)
-
-			resultsraw=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3-)
-			readarray results < $resultsraw
-			echo $results > $in
+			results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3-)
 			#nick=$(echo "$results" | cut -d ">" -f 1 | grep -o -i "[a-z0-9\_\-]*")
 			#msg=$(echo "$results" | cut -d ">" -f 2-)
+			count=$(echo "$results" | wc -l)
 
-			#count=$(echo "$results" | wc -l)
+			if [[ $count -ge 5 ]]; then
+				echo "$results" | tail -n 3 > $in
+				echo "$results" > $HOME/.punyama/grep.txt
 
-			#if [[ $count -ge 5 ]]; then
-			#	echo "$results" | tail -n 3 > $in
-			#	echo "$results" > $HOME/.punyama/grep.txt
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/grep.txt" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
+				url=http://a.pomf.se/$pomffile
 
-			#	upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/grep.txt" "http://pomf.se/upload.php")
-			#	pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
-			#	url=http://a.pomf.se/$pomffile
-
-			#	echo "$(expr $count - 3 ) more results: $url" > $in
-			#elif [[ -z $results ]]; then
-			#	echo "No results~" > $in
-			#else
-			#	echo "$results" > $in
-			#fi
+				echo "$(expr $count - 3 ) more results: $url" > $in
+			elif [[ -z $results ]]; then
+				echo "No results~" > $in
+			else
+				echo "$results" > $in
+			fi
 
 		# Grep error
 		elif [[ $msg == ".grep" ]]; then
