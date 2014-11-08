@@ -22,7 +22,6 @@ while read date time nick msg; do
 		# TODO: Add some kind of confirmation
 		if [[ $msg == ".pull" ]]; then
 			bash $HOME/.punyama/god.sh -u -s
-			echo "Pulled in updates, pls .reload me~" > $in
 
 		# Reload punyama
 		elif [[ $msg == ".reload" ]]; then
