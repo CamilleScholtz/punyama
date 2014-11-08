@@ -274,9 +274,8 @@ while read date time nick msg; do
 
 		# Stopwatch
 		elif [[ $msg == ".stopwatch"* ]]; then
-			echo "$msg" > $in
-			word=$(echo $msg | cut -d " " -f 3)
-
+			word=$(echo $msg | cut -d " " -f 2)
+			echo "$word" > $in
 			if [[ $word == "start" ]]; then
 				if [[ $stopwatch -eq 0 ]]; then
 					stopwatch=$(date +"%s")
