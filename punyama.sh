@@ -275,17 +275,17 @@ while read date time nick msg; do
 		# Stopwatch
 		elif [[ $msg == ".stopwatch"* ]]; then
 			word=$(echo $msg | cut -d " " -f 2)
-			echo "$word" > $in
 			if [[ $word == "start" ]]; then
 				if [[ $stopwatch -eq 0 ]]; then
 					stopwatch=$(date +"%s")
+					echo "the stopwatch is now running~" > $in
 				else
 					echo "the stopwatch is still running~" > $in
 				fi
 
 			elif [[ $word == "lap" ]]; then
 				if [[ stopwatch -ne 0 ]]; then
-					echo "$(echo "$(date +"%s")-$stopwatch" | bc > $in) seconds have passed"
+					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed" > $in
 				else
 					echo "Stopwatch is not running." > $in
 					echo "Use .stopwatch start to start the stopwatch." > $in
@@ -293,7 +293,7 @@ while read date time nick msg; do
 
 			elif [[ $word ==  "stop" ]]; then
 				if [[ stopwatch -ne 0 ]]; then
-					echo "$(echo "$(date +"%s")-$stopwatch" | bc > $in) seconds have passed"
+					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed" > $in
 					stopwatch=0
 				else
 					echo "Stopwatch is not running." > $in
