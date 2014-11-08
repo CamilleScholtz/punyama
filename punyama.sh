@@ -14,7 +14,7 @@ in=$HOME/.punyama/text/$server/\#$channel/in
 out=$HOME/.punyama/text/$server/\#$channel/out
 
 # Say hi
-echo "fry me to the moon~" > $in
+echo "Reporting in~" > $in
 
 tailf -n 1 $out | \
 while read date time nick msg; do
@@ -322,6 +322,9 @@ while read date time nick msg; do
 				date +"The time is %I:%M %p~" > $in
 			fi
 
+		elif [[ $msg == ".time till"* ]]; then
+			word=$(echo $msg | cut -d " " -f 2-)
+			echo "$(echo "$(date -d $word +"%s")-$(date +"%s")" | bc) seconds till $word" > in
 		fi
 	fi
 
