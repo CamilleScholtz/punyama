@@ -124,7 +124,6 @@ while read date time nick msg; do
 			echo "Please enter a calculation~" > $in
 
 		# Count words
-		# TODO: Grep and count numbers are different
 		elif [[ $msg == ".count "* ]]; then
 			word=$(echo $msg | cut -d " " -f 2-)
 
@@ -186,11 +185,12 @@ while read date time nick msg; do
 			echo "https://github.com/onodera-punpun/punyama" > $in
 
 		# Grep through logs
-		# TODO: Grep and count numbers are different
 		# TODO: Rice this with color.
 		elif [[ $msg == ".grep "* ]]; then
 			word=$(echo $msg | cut -d " " -f 2-)
 			results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3-)
+			nick=$(echo "$results" | cut -d ">" -f 1 | grep -o -i "[a-z0-9\_\-]*")
+			msg=$(echo "$results" | cut -d ">" -f 2-)
 			count=$(echo "$results" | wc -l)
 
 			if [[ $count -ge 5 ]]; then
