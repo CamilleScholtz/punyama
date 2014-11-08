@@ -298,8 +298,8 @@ while read date time nick msg; do
 					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed~" > $in
 					stopwatch=0
 				else
-					echo "Stopwatch is not running." > $in
-					echo "Use .stopwatch start to start the stopwatch." > $in
+					echo "Stopwatch is not running~" > $in
+					echo "Use .stopwatch start to start the stopwatch~" > $in
 				fi
 			else
 				echo "Please use one of the following options: start lap stop" > $in
