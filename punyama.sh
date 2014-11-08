@@ -90,7 +90,7 @@ while read date time nick msg; do
 
 			echo "punyama version $version, alive for $uptime~" > $in
 			echo "Hosted by $USER@$hostname, running $distro~" > $in
-			echo "https://github.com/onodera-punpun/punyama"
+			echo "https://github.com/onodera-punpun/scripts/tree/master/irc"
 
 		# Set afk message
 		elif [[ $msg == ".afk "* ]]; then
@@ -183,7 +183,7 @@ while read date time nick msg; do
 			fi
 
 		elif [[ $msg == ".git" ]]; then
-			echo "https://github.com/onodera-punpun/punyama" > $in
+			echo "https://github.com/onodera-punpun/scripts/tree/master/irc" > $in
 
 		# Grep through logs
 		# TODO: Grep and count numbers are different

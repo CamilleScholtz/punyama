@@ -24,18 +24,6 @@ while read date time nick msg; do
 			bash $HOME/.punyama/god.sh -u -s
 			echo "Pulled in updates, pls .reload me~" > $in
 
-		# Push in updates
-		# TODO: Add some kind of confirmation
-		elif [[ $msg == ".push "* ]]; then
-			word=$(echo $msg | cut -d " " -f 2)
-
-			echo "$word" > $HOME/.punyama/link.txt
-			echo "Pushed in updates, pls .pull~" > $in
-
-		# Push error
-		elif [[ $msg == ".push" ]]; then
-			echo "Please provide a link~" > $in
-
 		# Reload punyama
 		elif [[ $msg == ".reload" ]]; then
 			bash $HOME/.punyama/god.sh -r -s
