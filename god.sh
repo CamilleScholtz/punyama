@@ -33,7 +33,6 @@ if [[ $# -ge 1 ]]; then
 				silent=true
 				;;
 			-u)
-				# curl -s "$(cat $SCRIPTS/irc/link.txt)" > $HOME/.punyama/punyama.sh
 				git pull $HOME/.punyama
 				;;
 		esac
