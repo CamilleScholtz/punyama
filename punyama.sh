@@ -275,6 +275,7 @@ while read date time nick msg; do
 		# Stopwatch
 		elif [[ $msg == ".stopwatch"* ]]; then
 			word=$(echo $msg | cut -d " " -f 2)
+
 			if [[ $word == "start" ]]; then
 				if [[ $stopwatch -eq 0 ]]; then
 					stopwatch=$(date +"%s")
@@ -300,8 +301,14 @@ while read date time nick msg; do
 					echo "Use .stopwatch start to start the stopwatch." > $in
 				fi
 			else
-				echo "Please use one of the following options: start, lap, stop" > $in
+				echo "Please use one of the following options: start lap stop" > $in
 			fi
+
+		elif [[ $msg == ".time till "* ]]; then
+			word=$(echo $msg | cut -d " " -f 3-)
+			echo "$word" > $in
+			echo "$(echo "$(date -d $word +"%s")-$(date +"%s")" | bc) seconds till $word" > in
+		fi
 
 		# Check time
 		# TODO: Add betime thingy
@@ -322,11 +329,6 @@ while read date time nick msg; do
 				date +"The time is %I:%M %p~" > $in
 			fi
 
-		elif [[ $msg == ".time till "* ]]; then
-			word=$(echo $msg | cut -d " " -f 3-)
-			echo "$word" > $in
-			echo "$(echo "$(date -d $word +"%s")-$(date +"%s")" | bc) seconds till $word" > in
-		fi
 	fi
 
 done > $in
