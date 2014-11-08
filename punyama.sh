@@ -80,7 +80,7 @@ while read date time nick msg; do
 
 		# Display help
 		if [[ $msg == ".help" ]]; then
-			echo -e ".about .afk($red!$foreground) .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .msg .ping .pull($red!$foreground) .push($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
+			echo -e ".about .afk($red!$foreground) .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
