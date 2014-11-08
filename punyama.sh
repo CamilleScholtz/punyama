@@ -307,8 +307,9 @@ while read date time nick msg; do
 		elif [[ $msg == ".time till "* ]]; then
 			word=$(echo $msg | cut -d " " -f 3-)
 			echo "$word" > $in
+			echo "$(date -d $word +"%s")" > $in
+			echo "$(date +"%s")" > $in
 			echo "$(echo "$(date -d $word +"%s")-$(date +"%s")" | bc) seconds till $word" > in
-		fi
 
 		# Check time
 		# TODO: Add betime thingy
@@ -328,7 +329,7 @@ while read date time nick msg; do
 			else
 				date +"The time is %I:%M %p~" > $in
 			fi
-
+		fi
 	fi
 
 done > $in
