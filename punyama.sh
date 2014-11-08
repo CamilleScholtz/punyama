@@ -279,22 +279,23 @@ while read date time nick msg; do
 			if [[ $word == "start" ]]; then
 				if [[ $stopwatch -eq 0 ]]; then
 					stopwatch=$(date +"%s")
-					echo "the stopwatch is now running~" > $in
+
+					echo "The stopwatch is now running~" > $in
 				else
-					echo "the stopwatch is still running~" > $in
+					echo "The stopwatch is still running~" > $in
 				fi
 
 			elif [[ $word == "lap" ]]; then
 				if [[ stopwatch -ne 0 ]]; then
-					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed" > $in
+					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed~" > $in
 				else
-					echo "Stopwatch is not running." > $in
-					echo "Use .stopwatch start to start the stopwatch." > $in
+					echo "The stopwatch is not running~" > $in
+					echo "Use .stopwatch start to start the stopwatch~" > $in
 				fi
 
 			elif [[ $word ==  "stop" ]]; then
 				if [[ stopwatch -ne 0 ]]; then
-					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed" > $in
+					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed~" > $in
 					stopwatch=0
 				else
 					echo "Stopwatch is not running." > $in
