@@ -33,7 +33,7 @@ if [[ $# -ge 1 ]]; then
 				silent=true
 				;;
 			-u)
-				git pull $HOME/.punyama
+				git --git-dir=$HOME/.punyama/.git pull
 				;;
 		esac
 	done
