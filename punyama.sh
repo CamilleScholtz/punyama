@@ -7,11 +7,11 @@ red="\x0305"
 # Define default values
 server=irc.freenode.net
 channel=doingitwell
-version=$(date +"%y%m%d-%H%M" -r $SCRIPTS/irc/punyama.sh)
+version=$(date +"%y%m%d-%H%M" -r $HOME/.punyama/punyama.sh)
 
 # Make variables for in and out.
-in=$SCRIPTS/irc/text/$server/\#$channel/in
-out=$SCRIPTS/irc/text/$server/\#$channel/out
+in=$HOME/.punyama/text/$server/\#$channel/in
+out=$HOME/.punyama/text/$server/\#$channel/out
 
 # Say hi
 echo "Reporting in~" > $in
@@ -40,25 +40,25 @@ while read date time nick msg; do
 		fi
 
 		# Intro
-		cat $SCRIPTS/irc/intro.txt | grep $fixednick | cut -d " " -f 2- > $in
+		cat $HOME/.punyama/intro.txt | grep $fixednick | cut -d " " -f 2- > $in
 		# Message
 		# TODO: Grep returns a non-critical error here
-		if [[ -n $(cat $SCRIPTS/irc/msg.txt | grep $fixednick | cut -d " " -f 2-) ]]; then
+		if [[ -n $(cat $HOME/.punyama/msg.txt | grep $fixednick | cut -d " " -f 2-) ]]; then
 			if [[ $fixednick == onodera ]]; then
 				swapednick=Vista-Narvas
 			elif [[ $fixednick == Vista-Narvas ]]; then
 				swapednick=onodera
 			fi
 
-			echo "$swapednick has left a message for you: $(cat $SCRIPTS/irc/msg.txt | grep $fixednick | cut -d " " -f 2-)" > $in
-			sed -i "/$fixednick .*/d" $SCRIPTS/irc/msg.txt
+			echo "$swapednick has left a message for you: $(cat $HOME/.punyama/msg.txt | grep $fixednick | cut -d " " -f 2-)" > $in
+			sed -i "/$fixednick .*/d" $HOME/.punyama/msg.txt
 		fi
 	fi
 
 	# Afk stuff
-	if [[ -n $(cat $SCRIPTS/irc/afk.txt | grep $nick) ]]; then
+	if [[ -n $(cat $HOME/.punyama/afk.txt | grep $nick) ]]; then
 		echo "$nick is no longer afk~"
-		sed -i "/$nick .*/d" $SCRIPTS/irc/afk.txt
+		sed -i "/$nick .*/d" $HOME/.punyama/afk.txt
 	fi
 
 	# Website stuff
@@ -84,7 +84,7 @@ while read date time nick msg; do
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
-			uptime=$(ps -p $(pgrep -f "bash $SCRIPTS/irc/pegasus.sh" | tail -n 1) -o etime= | cut -c 7-)
+			uptime=$(ps -p $(pgrep -f "bash $HOME/.punyama/pegasus.sh" | tail -n 1) -o etime= | cut -c 7-)
 			hostname=$(hostname)
 			distro=$(cat /etc/*-release | grep "PRETTY_NAME" | cut -d '"' -f 2)
 
@@ -96,20 +96,20 @@ while read date time nick msg; do
 		elif [[ $msg == ".afk "* ]]; then
 			word=$(echo $msg | cut -d " " -f 2-)
 
-			if [[ -z $(cat $SCRIPTS/irc/afk.txt | grep "$nick") ]]; then
-				echo "$nick $word" >> $SCRIPTS/irc/afk.txt
+			if [[ -z $(cat $HOME/.punyama/afk.txt | grep "$nick") ]]; then
+				echo "$nick $word" >> $HOME/.punyama/afk.txt
 				echo "You are now afk~" > $in
 			else
-				sed -i "s/$nick .*/$nick $word/g" $SCRIPTS/irc/afk.txt
+				sed -i "s/$nick .*/$nick $word/g" $HOME/.punyama/afk.txt
 				echo "You are now afk~" > $in
 			fi
 
 		# Get afk message
 		elif [[ $msg == ".afk" ]]; then
-			count=$(cat $SCRIPTS/irc/afk.txt | wc -l)
+			count=$(cat $HOME/.punyama/afk.txt | wc -l)
 
 			for (( number=1; number<=$count; number++ )); do
-				echo "$(cat $SCRIPTS/irc/afk.txt | head -n $number | tail -n 1 | cut -d " " -f 1) is afk because: $(cat $SCRIPTS/irc/afk.txt | head -n $number | tail -n 1 | cut -d " " -f 2-)" > $in
+				echo "$(cat $HOME/.punyama/afk.txt | head -n $number | tail -n 1 | cut -d " " -f 1) is afk because: $(cat $HOME/.punyama/afk.txt | head -n $number | tail -n 1 | cut -d " " -f 2-)" > $in
 			done
 
 		# Calculator
@@ -195,9 +195,9 @@ while read date time nick msg; do
 
 			if [[ $count -ge 5 ]]; then
 				echo "$results" | tail -n 3 > $in
-				echo "$results" > $SCRIPTS/irc/grep.txt
+				echo "$results" > $HOME/.punyama/grep.txt
 
-				upload=$(curl --silent -sf -F files[]="@$SCRIPTS/irc/grep.txt" "http://pomf.se/upload.php")
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/grep.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
@@ -216,17 +216,17 @@ while read date time nick msg; do
 		elif [[ $msg == ".intro "* ]]; then
 			word=$(echo $msg | cut -d " " -f 2-)
 
-			if [[ -z $(cat $SCRIPTS/irc/intro.txt | grep "$nick") ]]; then
-				echo "$nick $word" >> $SCRIPTS/irc/intro.txt
+			if [[ -z $(cat $HOME/.punyama/intro.txt | grep "$nick") ]]; then
+				echo "$nick $word" >> $HOME/.punyama/intro.txt
 				echo "Intro set~" > $in
 			else
-				sed -i "s/$nick .*/$nick $word/g" $SCRIPTS/irc/intro.txt
+				sed -i "s/$nick .*/$nick $word/g" $HOME/.punyama/intro.txt
 				echo "Intro set~" > $in
 			fi
 
 		# Get intro message
 		elif [[ $msg == ".intro" ]]; then
-			echo "Your intro is: $(cat $SCRIPTS/irc/intro.txt | grep $nick | cut -d " " -f 2-)" > $in
+			echo "Your intro is: $(cat $HOME/.punyama/intro.txt | grep $nick | cut -d " " -f 2-)" > $in
 
 		# Leave message
 		elif [[ $msg == ".msg "* ]]; then
@@ -238,26 +238,26 @@ while read date time nick msg; do
 			swapednick=onodera
 			fi
 
-			if [[ -z $(cat $SCRIPTS/irc/msg.txt | grep "$swapednick") ]]; then
-				echo "$swapednick $word" >> $SCRIPTS/irc/msg.txt
+			if [[ -z $(cat $HOME/.punyama/msg.txt | grep "$swapednick") ]]; then
+				echo "$swapednick $word" >> $HOME/.punyama/msg.txt
 				echo "Message left~" > $in
 			else
-				sed -i "s/$swapednick .*/$swapednick $word/g" $SCRIPTS/irc/msg.txt
+				sed -i "s/$swapednick .*/$swapednick $word/g" $HOME/.punyama/msg.txt
 				echo "Message left~" > $in
 			fi
 
 		# Get message
 		elif [[ $msg == ".msg" ]]; then
 			# TODO: Grep returns a non-critical error here
-			if [[ -n $(cat $SCRIPTS/irc/msg.txt | grep $nick | cut -d " " -f 2-) ]]; then
+			if [[ -n $(cat $HOME/.punyama/msg.txt | grep $nick | cut -d " " -f 2-) ]]; then
 				if [[ $nick == onodera ]]; then
 					swapednick=Vista-Narvas
 				elif [[ $nick == Vista-Narvas ]]; then
 					swapednick=onodera
 				fi
 
-				echo "$swapednick has left a message for you: $(cat $SCRIPTS/irc/msg.txt | grep $fixednick | cut -d " " -f 2-)" > $in
-				sed -i "/$nick .*/d" $SCRIPTS/irc/msg.txt
+				echo "$swapednick has left a message for you: $(cat $HOME/.punyama/msg.txt | grep $fixednick | cut -d " " -f 2-)" > $in
+				sed -i "/$nick .*/d" $HOME/.punyama/msg.txt
 			else
 				echo "Sorry, you don't have any messages~" > $in
 			fi

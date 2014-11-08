@@ -5,8 +5,8 @@ server=irc.freenode.net
 channel=doingitwell
 
 # Make variables for in and out.
-in=$SCRIPTS/irc/text/$server/\#$channel/in
-out=$SCRIPTS/irc/text/$server/\#$channel/out
+in=$HOME/.punyama/text/$server/\#$channel/in
+out=$HOME/.punyama/text/$server/\#$channel/out
 
 tailf -n 1 $out | \
 while read date time nick msg; do
@@ -21,7 +21,7 @@ while read date time nick msg; do
 		# Pull in updates
 		# TODO: Add some kind of confirmation
 		if [[ $msg == ".pull" ]]; then
-			bash $SCRIPTS/irc/god.sh -u -s
+			bash $HOME/.punyama/god.sh -u -s
 			echo "Pulled in updates, pls .reload me~" > $in
 
 		# Push in updates
@@ -29,7 +29,7 @@ while read date time nick msg; do
 		elif [[ $msg == ".push "* ]]; then
 			word=$(echo $msg | cut -d " " -f 2)
 
-			echo "$word" > $SCRIPTS/irc/link.txt
+			echo "$word" > $HOME/.punyama/link.txt
 			echo "Pushed in updates, pls .pull~" > $in
 
 		# Push error
@@ -38,7 +38,7 @@ while read date time nick msg; do
 
 		# Reload punyama
 		elif [[ $msg == ".reload" ]]; then
-			bash $SCRIPTS/irc/god.sh -r -s
+			bash $HOME/.punyama/god.sh -r -s
 		fi
 	fi
 
