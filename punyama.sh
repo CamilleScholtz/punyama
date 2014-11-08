@@ -306,7 +306,33 @@ while read date time nick msg; do
 
 		elif [[ $msg == ".time till "* ]]; then
 			word=$(echo $msg | cut -d " " -f 3-)
-			echo "$(echo "$(date -d $word +"%s")-$(date +"%s")"|bc) seconds till $word" > $in
+			# echo "$(echo "$(date -d $word +"%s")-$(date +"%s")"|bc) seconds till $word" > $in
+			
+			seconds="$(echo "$(date -d $word +"%s")-$(date +"%s")"|bc)"
+			minutes=$(echo "$seconds/60"|bc)
+			hours=$(echo "$minutes/60"|bc)
+			days=$(echo "$hours/24"|bc)
+			
+			
+			seconds=$(echo "$seconds-$minutes*60"|bc)
+			minutes=$(echo "$minutes-$hours*60"|bc)
+			hours=$(echo "$hours-$days*60"|bc)
+
+
+			if [[ $days -le 0 ]]; then
+				days=''
+				if [[ $hours -le 0 ]]; then
+					hours=''
+					if [[ $minutes -le 0 ]]; then
+						minutes=''
+						if [[ $seconds -le 0 ]]; then
+							seconds=''
+						fi
+					fi
+				fi
+			fi
+			echo "$days $hours $minutes $seconds" > $in
+
 
 		# Check time
 		# TODO: Add betime thingy
