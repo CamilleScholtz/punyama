@@ -33,8 +33,8 @@ if [[ $# -ge 1 ]]; then
 				silent=true
 				;;
 			-u)
-				GIT_DIR=$HOME/.punyama/.git
-				git pull https://github.com/onodera-punpun/punyama
+				cd $HOME/.punyama
+				git pull
 				;;
 		esac
 	done
