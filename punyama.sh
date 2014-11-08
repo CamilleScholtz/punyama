@@ -14,7 +14,7 @@ in=$HOME/.punyama/text/$server/\#$channel/in
 out=$HOME/.punyama/text/$server/\#$channel/out
 
 # Say hi
-echo "get your face whooped~" > $in
+echo "get your eye whooped~" > $in
 
 tailf -n 1 $out | \
 while read date time nick msg; do
