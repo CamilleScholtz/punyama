@@ -323,7 +323,7 @@ while read date time nick msg; do
 			fi
 
 		elif [[ $msg == ".time till "* ]]; then
-			word=$(echo $msg | cut -d " " -f 2-)
+			word=$(echo $msg | cut -d " " -f 3-)
 			echo "$word" > $in
 			echo "$(echo "$(date -d $word +"%s")-$(date +"%s")" | bc) seconds till $word" > in
 		fi
