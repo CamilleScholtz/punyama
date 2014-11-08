@@ -342,6 +342,7 @@ while read date time nick msg; do
 			time=$(date +"%H%M")
 
 			# TODO: Test this, make vista and onodera versions
+			# TODO: Use vistas code for this
 			if [[ $day -le 5 && $time -le 1730 ]]; then
 				left=$(expr 1730 - $time)
 
