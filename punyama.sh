@@ -84,7 +84,7 @@ while read date time nick msg; do
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
-			uptime=$(ps -p $(pgrep -f "bash $HOME/.punyama/pegasus.sh" | tail -n 1) -o etime= | cut -c 7-)
+			uptime=$(ps -p $(pgrep -f "bash $HOME/.punyama/pegasus.sh" | tail -n 1) -o etime= | cut -d " " -f 4-)
 			hostname=$(hostname)
 			distro=$(cat /etc/*-release | grep "PRETTY_NAME" | cut -d '"' -f 2)
 
