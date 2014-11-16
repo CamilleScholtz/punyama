@@ -55,12 +55,6 @@ while read date time nick msg; do
 		fi
 	fi
 
-	# Afk stuff
-	if [[ -n $(cat $HOME/.punyama/afk.txt | grep $nick) ]]; then
-		echo "$nick is no longer afk~"
-		sed -i "/$nick .*/d" $HOME/.punyama/afk.txt
-	fi
-
 	# Website stuff
 	# TODO: filter png/jpg thingy
 	if [[ $msg =~ https?:// && -z $(echo "$msg" | grep -i -s ".*[a-z0-9].png") && -z $(echo "$msg" | grep -i -s ".*[a-z0-9].jpg") ]]; then
@@ -80,7 +74,7 @@ while read date time nick msg; do
 
 		# Display help
 		if [[ $msg == ".help" ]]; then
-			echo -e ".about .afk($red!$foreground) .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
+			echo -e ".about .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
@@ -91,26 +85,6 @@ while read date time nick msg; do
 			echo "punyama version $version, alive for $uptime~" > $in
 			echo "Hosted by $USER@$hostname, running $distro~" > $in
 			echo "https://github.com/onodera-punpun/punyama"
-
-		# Set afk message
-		elif [[ $msg == ".afk "* ]]; then
-			word=$(echo $msg | cut -d " " -f 2-)
-
-			if [[ -z $(cat $HOME/.punyama/afk.txt | grep "$nick") ]]; then
-				echo "$nick $word" >> $HOME/.punyama/afk.txt
-				echo "You are now afk~" > $in
-			else
-				sed -i "s/$nick .*/$nick $word/g" $HOME/.punyama/afk.txt
-				echo "You are now afk~" > $in
-			fi
-
-		# Get afk message
-		elif [[ $msg == ".afk" ]]; then
-			count=$(cat $HOME/.punyama/afk.txt | wc -l)
-
-			for (( number=1; number<=$count; number++ )); do
-				echo "$(cat $HOME/.punyama/afk.txt | head -n $number | tail -n 1 | cut -d " " -f 1) is afk because: $(cat $HOME/.punyama/afk.txt | head -n $number | tail -n 1 | cut -d " " -f 2-)" > $in
-			done
 
 		# Calculator
 		# TODO: fix weird decimals
@@ -227,6 +201,14 @@ while read date time nick msg; do
 		# Get intro message
 		elif [[ $msg == ".intro" ]]; then
 			echo "Your intro is: $(cat $HOME/.punyama/intro.txt | grep $nick | cut -d " " -f 2-)" > $in
+
+		# Display last written messages by person
+		elif [[ $msg == ".last "* ]]; then
+			results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | tail -n 3 | cut -d " " -f 3-)
+
+		# Display last written messages
+		elif [[ $msg == ".last" ]]; then
+			results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | tail -n 3 | cut -d " " -f 3-)
 
 		# Leave message
 		elif [[ $msg == ".msg "* ]]; then
