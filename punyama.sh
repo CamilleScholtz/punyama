@@ -209,6 +209,7 @@ while read date time nick msg; do
 		# Display last written messages
 		elif [[ $msg == ".last" ]]; then
 			results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | tail -n 3 | cut -d " " -f 3-)
+			echo "$results" > $in
 
 		# Leave message
 		elif [[ $msg == ".msg "* ]]; then
