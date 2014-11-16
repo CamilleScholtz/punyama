@@ -202,10 +202,6 @@ while read date time nick msg; do
 		elif [[ $msg == ".intro" ]]; then
 			echo "Your intro is: $(cat $HOME/.punyama/intro.txt | grep $nick | cut -d " " -f 2-)" > $in
 
-		# Display last written messages by person
-		elif [[ $msg == ".last "* ]]; then
-			results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | tail -n 3 | cut -d " " -f 3-)
-
 		# Display last written messages
 		elif [[ $msg == ".last" ]]; then
 			results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | tail -n 3 | cut -d " " -f 3-)
