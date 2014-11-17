@@ -75,8 +75,6 @@ while read date time nick msg; do
 		# Display help
 		if [[ $msg == ".help"* ]]; then
 			word=$(echo $msg | sed 's/^\.help //' )
-			echo $msg > $in
-			echo $word > $in
 			case "$word" in
 				about)
 					echo "info about .about" > $in
