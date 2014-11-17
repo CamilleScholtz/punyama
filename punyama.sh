@@ -70,12 +70,16 @@ while read date time nick msg; do
 	fi
 
 	# Check if command
+	# TODO: Add .wkuk
 	if [[ $msg == "."* ]]; then
 
 		# Display detailed help
 		if [[ $msg == ".help "* ]]; then
 			word=$(echo $msg | sed 's/^\.help //')
 
+			# TODO: Add detailed info
+			# TODO: Add .help
+			# TODO: Add .ded 
 			case "$word" in
 				about)
 					echo "info about .about" > $in
@@ -138,7 +142,7 @@ while read date time nick msg; do
 
 		# Display help
 		elif [[ $msg == ".help" ]]; then
-			echo -e ".about .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
+			echo -e ".about .calc($red!$foreground) .count .date .day .ded .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
