@@ -72,8 +72,8 @@ while read date time nick msg; do
 	# Check if command
 	if [[ $msg == "."* ]]; then
 
-		# Display help
-		if [[ $msg == ".help"* ]]; then
+		# Display detailed help
+		if [[ $msg == ".help "* ]]; then
 			word=$(echo $msg | sed 's/^\.help //' )
 			case "$word" in
 				about)
@@ -131,11 +131,13 @@ while read date time nick msg; do
 					echo "info about .time" > $in
 					;;
 				*)
-					echo -e ".about .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
-					;;
+					echo "Not a valid command~" > $in
 			esac
 
-			# echo -e ".about .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
+		# Display help
+		if [[ $msg == ".help" ]]; then
+			echo -e ".about .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
+			;;
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
