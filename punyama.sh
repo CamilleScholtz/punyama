@@ -73,68 +73,68 @@ while read date time nick msg; do
 	if [[ $msg == "."* ]]; then
 
 		# Display help
-		word=$(echo $msg | sed 's/^\.help //' )
-		case "$word" in
-			about)
-				echo "info about .about" > $in
-				;;
-			calc)
-				echo "info about .calc" > $in
-				;;
-			count)
-				echo "info about .count" > $in
-				;;
-			date)
-				echo "info about .date" > $in
-				;;
-			day)
-				echo "info about .day" > $in
-				;;
-			fortune)
-				echo "info about .fortune" > $in
-				;;
-			git)
-				echo "info about .git" > $in
-				;;
-			grep)
-				echo "info about .grep" > $in
-				;;
-			intro)
-				echo "info about .intro" > $in
-				;;
-			kill)
-				echo "info about .kill" > $in
-				;;
-			last)
-				echo "info about .last" > $in
-				;;
-			msg)
-				echo "info about .msg" > $in
-				;;
-			ping)
-				echo "info about .ping" > $in
-				;;
-			pull)
-				echo "info about .pull" > $in
-				;;
-			random)
-				echo "info about .random" > $in
-				;;
-			reload)
-				echo "info about .reload" > $in
-				;;
-			stopwatch)
-				echo "info about .stopwatch" > $in
-				;;
-			time)
-				echo "info about .time" > $in
-				;;
-			*)
-				echo -e ".about .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
-				;;
-		esac
+		if [[ $msg == ".help" ]]; then
+			word=$(echo $msg | sed 's/^\.help //' )
+			case "$word" in
+				about)
+					echo "info about .about" > $in
+					;;
+				calc)
+					echo "info about .calc" > $in
+					;;
+				count)
+					echo "info about .count" > $in
+					;;
+				date)
+					echo "info about .date" > $in
+					;;
+				day)
+					echo "info about .day" > $in
+					;;
+				fortune)
+					echo "info about .fortune" > $in
+					;;
+				git)
+					echo "info about .git" > $in
+					;;
+				grep)
+					echo "info about .grep" > $in
+					;;
+				intro)
+					echo "info about .intro" > $in
+					;;
+				kill)
+					echo "info about .kill" > $in
+					;;
+				last)
+					echo "info about .last" > $in
+					;;
+				msg)
+					echo "info about .msg" > $in
+					;;
+				ping)
+					echo "info about .ping" > $in
+					;;
+				pull)
+					echo "info about .pull" > $in
+					;;
+				random)
+					echo "info about .random" > $in
+					;;
+				reload)
+					echo "info about .reload" > $in
+					;;
+				stopwatch)
+					echo "info about .stopwatch" > $in
+					;;
+				time)
+					echo "info about .time" > $in
+					;;
+				*)
+					echo -e ".about .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
+					;;
+			esac
 
-		# if [[ $msg == ".help" ]]; then
 			# echo -e ".about .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
 
 		# About message
