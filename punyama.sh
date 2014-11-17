@@ -75,6 +75,7 @@ while read date time nick msg; do
 		# Display detailed help
 		if [[ $msg == ".help "* ]]; then
 			word=$(echo $msg | sed 's/^\.help //')
+
 			case "$word" in
 				about)
 					echo "info about .about" > $in
@@ -201,8 +202,10 @@ while read date time nick msg; do
 			else
 				date +"Today is a %A~" > $in
 			fi
+
 		elif [[ $msg == ".ded" ]]; then
-			echo "Im still here" > $in
+			echo "I'm still here~" > $in
+
 		# Get a fortune
 		elif [[ $msg == ".fortune"* ]]; then
 			word=$(echo $msg | cut -d " " -f 2)
