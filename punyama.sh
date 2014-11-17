@@ -136,7 +136,7 @@ while read date time nick msg; do
 			esac
 
 		# Display help
-		if [[ $msg == ".help" ]]; then
+		elif [[ $msg == ".help" ]]; then
 			echo -e ".about .calc($red!$foreground) .count .date .day .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
 
 		# About message
