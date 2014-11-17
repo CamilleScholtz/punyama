@@ -201,7 +201,8 @@ while read date time nick msg; do
 			else
 				date +"Today is a %A~" > $in
 			fi
-
+		elif [[ $msg == ".ded" ]]; then
+			echo "Im still here" > $in
 		# Get a fortune
 		elif [[ $msg == ".fortune"* ]]; then
 			word=$(echo $msg | cut -d " " -f 2)
