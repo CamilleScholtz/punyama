@@ -95,49 +95,46 @@ while read date time nick msg; do
 					echo "Display about message~" > $in
 					;;
 				calc)
-					echo "Calculator~" > $in
+					echo "Simple calculator~" > $in
 					;;
 				count)
-					echo "Count how many times a word has been used or how many times an user has spoken~" > $in
+					echo "Count how many times a word has been used or how many times a user has spoken, please specify at least one word or nick~" > $in
 					;;
 				date)
-					echo "info about .date" > $in
+					echo "Shows the current date~" > $in
 					;;
 				day)
-					echo "info about .day" > $in
+					echo "Shows the current day~" > $in
 					;;
 				fortune)
-					echo "info about .fortune" > $in
+					echo "Gives a fortune, specify one of the following subjects: cookie paradox science tech" > $in
 					;;
 				git)
-					echo "info about .git" > $in
+					echo "Give the github link~" > $in
 					;;
 				grep)
-					echo "info about .grep" > $in
+					echo "Grep through logs, please specify at least one word or nick~" > $in
 					;;
 				intro)
-					echo "info about .intro" > $in
-					;;
-				kill)
-					echo "info about .kill" > $in
+					echo "Set or display intro~" > $in
 					;;
 				last)
-					echo "info about .last" > $in
+					echo "Shows the last three messages~" > $in
 					;;
 				msg)
-					echo "info about .msg" > $in
+					echo "Message a user, the message will be displayed the next time the user joins the channel or enters the .msg command~" > $in
 					;;
 				ping)
-					echo "info about .ping" > $in
+					echo "Pong~" > $in
 					;;
 				pull)
-					echo "info about .pull" > $in
+					echo "Pull in updates from git~" > $in
 					;;
 				random)
-					echo "info about .random" > $in
+					echo "Get a random quote~" > $in
 					;;
 				reload)
-					echo "info about .reload" > $in
+					echo "Reloads me~" > $in
 					;;
 				stopwatch)
 					echo "info about .stopwatch" > $in
@@ -240,7 +237,7 @@ while read date time nick msg; do
 			elif [[ $word == "cookie" ]]; then
 				fortune -a -s goedel > $in
 			else
-				echo "Please choose one of the following items: cookie paradox science tech" > $in
+				echo "Please choose one of the following subjects: cookie paradox science tech" > $in
 			fi
 
 		elif [[ $msg == ".git" ]]; then
