@@ -422,24 +422,26 @@ while read date time nick msg; do
 
 				minutes=$(echo "$minutes-$hours*60" | bc)
 
-				if [[ $hours -le 0 ]]; then
-					hours=""
-					if [[ $minutes -le 0 ]]; then
-						minutes=""
-					fi
-				fi
-
-				hoursword="hours"
+				hoursword="hours and "
 				minutesword="minutes"
 
 				if [[ $hours -eq 1 ]]; then
-					hoursword="hour"
+					hoursword="hour and "
 				fi
 				if [[ $minutes -eq 1 ]]; then
 					minutesword="minute"
 				fi
 
-				echo "The time is $current, $hours $hoursword and $minutes $minutesword left at work~" > $in
+				if [[ $hours -le 0 ]]; then
+					hoursword=""
+					hours=""
+				fi
+				if [[ $minutes -le 0 ]]; then
+					hoursword=""
+					minutes=""
+				fi
+
+				echo "The time is $current, $hours $hoursword$minutes $minutesword left at work~" > $in
 			else
 				echo "The time is $current"
 			fi
