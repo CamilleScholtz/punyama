@@ -422,11 +422,11 @@ while read date time nick msg; do
 
 				minutes=$(echo "$minutes-$hours*60" | bc)
 
-				hoursword="hours and "
+				hoursword=" hours and "
 				minutesword="minutes"
 
 				if [[ $hours -eq 1 ]]; then
-					hoursword="hour and "
+					hoursword=" hour and "
 				fi
 				if [[ $minutes -eq 1 ]]; then
 					minutesword="minute"
@@ -442,7 +442,7 @@ while read date time nick msg; do
 				fi
 
 				# TODO: Fix space when less than one hour
-				echo "The time is $current, $hours $hoursword$minutes $minutesword left at work~" > $in
+				echo "The time is $current, $hours$hoursword$minutes $minutesword left at work~" > $in
 			else
 				echo "The time is $current"
 			fi
