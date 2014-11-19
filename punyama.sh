@@ -355,6 +355,7 @@ while read date time nick msg; do
 				echo "Please use one of the following options: start lap stop" > $in
 			fi
 
+		# TODO: Make output pretty
 		elif [[ $msg == ".time till "* ]]; then
 			word=$(echo $msg | cut -d " " -f 3-)
 			# echo "$(echo "$(date -d $word +"%s")-$(date +"%s")"|bc) seconds till $word" > $in
@@ -394,7 +395,6 @@ while read date time nick msg; do
 			hours=$(echo "$minutes/60" | bc)
 
 			minutes=$(echo "$minutes-$hours*60" | bc)
-			hours=$(echo "$hours-$days*60" | bc)
 
 			if [[ $hours -le 0 ]]; then
 				hours=""
@@ -403,7 +403,7 @@ while read date time nick msg; do
 				fi
 			fi
 
-			echo "The time is $current, $hours hours, $minutes minutes left at work~" > $in
+			echo "The time is $current, $hours hours and $minutes minutes left at work~" > $in
 		fi
 	fi
 
