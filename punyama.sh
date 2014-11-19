@@ -92,13 +92,13 @@ while read date time nick msg; do
 			# TODO: Add .ded 
 			case "$word" in
 				about)
-					echo "info about .about" > $in
+					echo "Display about message~" > $in
 					;;
 				calc)
-					echo "info about .calc" > $in
+					echo "Calculator~" > $in
 					;;
 				count)
-					echo "info about .count" > $in
+					echo "Count how many times a word has been used or how many times an user has spoken~" > $in
 					;;
 				date)
 					echo "info about .date" > $in
