@@ -72,11 +72,12 @@ while read date time nick msg; do
 	
 	# Feel stuff
 	if [[ $msg == "tfw "* || $msg == ">tfw "* ]]; then
+		rem $HOME/.punyama/feel.txt
 		if [[ $msg == "tfw "* ]]; then
 			msg=">$msg"
 		fi
 
-		echo "$msg" >> $HOME/.punyama/feel.txt
+		echo "$green$msg" >> $HOME/.punyama/feel.txt
 	fi
 
 	# Check if command
@@ -225,7 +226,7 @@ while read date time nick msg; do
 		elif [[ $msg == ".feels" ]]; then
 			feels=$(cat $HOME/.punyama/feel.txt)
 
-			echo -e "$green$feels"> $in
+			echo -e "$feels" > $in
 
 		# Get a fortune
 		elif [[ $msg == ".fortune"* ]]; then
