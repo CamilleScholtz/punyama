@@ -358,17 +358,15 @@ while read date time nick msg; do
 		elif [[ $msg == ".time till "* ]]; then
 			word=$(echo $msg | cut -d " " -f 3-)
 			# echo "$(echo "$(date -d $word +"%s")-$(date +"%s")"|bc) seconds till $word" > $in
-			
-			seconds="$(echo "$(date -d $word +"%s")-$(date +"%s")"|bc)"
-			minutes=$(echo "$seconds/60"|bc)
-			hours=$(echo "$minutes/60"|bc)
-			days=$(echo "$hours/24"|bc)
-			
-			
-			seconds=$(echo "$seconds-$minutes*60"|bc)
-			minutes=$(echo "$minutes-$hours*60"|bc)
-			hours=$(echo "$hours-$days*60"|bc)
+	
+			seconds=$(echo "$(date -d $word +"%s")-$(date +"%s")" | bc)
+			minutes=$(echo "$seconds/60" | bc)
+			hours=$(echo "$minutes/60" | bc)
+			days=$(echo "$hours/24" | bc)
 
+			seconds=$(echo "$seconds-$minutes*60" | bc)
+			minutes=$(echo "$minutes-$hours*60" | bc)
+			hours=$(echo "$hours-$days*60" | bc)
 
 			if [[ $days -le 0 ]]; then
 				days=''
@@ -382,6 +380,7 @@ while read date time nick msg; do
 					fi
 				fi
 			fi
+
 			echo "$days $hours $minutes $seconds" > $in
 
 
@@ -389,11 +388,12 @@ while read date time nick msg; do
 		# TODO: Add betime thingy
 		elif [[ $msg == ".time" ]]; then
 			day=$(date +"%u")
-			time=$(date +"%H%M")
-
+			time=$(date +"%s")
+			debug=true
 			# TODO: Test this, make vista and onodera versions
 			# TODO: Use vistas code for this
-			if [[ $day -le 5 && $time -le 1730 ]]; then
+			#if [[ $day -le 5 && $time -le 1730 ]]; then
+			if [[ debug == true ]]; then
 				left=$(expr 1730 - $time)
 
 				if [[ $nick == onodera ]]; then
