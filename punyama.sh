@@ -76,7 +76,6 @@ while read date time nick msg; do
 		fi
 
 		echo "$msg" >> $HOME/.punyama/feel.txt
-		echo "Feel saved~" > $in
 	fi
 
 	# Check if command
