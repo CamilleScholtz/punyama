@@ -392,8 +392,9 @@ while read date time nick msg; do
 			time=$(date +"%H%M")
 			current=$(date +"%I:%M %p~")
 		
-			# TODO: Check if $day and -le and -ge work
-			if [[ $day -le 5 && $time -le 1730 && $time -ge 0900 ]]; then
+			# TODO: Check if $day and -le work
+			# TODO: Add -ge for 0900
+			if [[ $day -le 5 && $time -le 1730 ]]; then
 				seconds=$(echo "$(date -d 17:30 +"%s")-$(date +"%s")" | bc)
 				minutes=$(echo "$seconds/60" | bc)
 				hours=$(echo "$minutes/60" | bc)
