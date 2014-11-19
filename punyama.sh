@@ -408,7 +408,17 @@ while read date time nick msg; do
 					fi
 				fi
 
-				echo "The time is $current, $hours hours and $minutes minutes left at work~" > $in
+				hoursword="hours"
+				minutesword="minutes"
+
+				if [[ $hours -eq 1 ]]; then
+					hoursword="hour"
+					if [[ $minutes -eq 1 ]]; then
+						minutesword="minute"
+					fi
+				fi
+
+				echo "The time is $current, $hours $hoursword and $minutes $minutesword left at work~" > $in
 			else
 				echo "The time is $current"
 			fi
