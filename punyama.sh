@@ -2,8 +2,8 @@
 
 # Define colors
 foreground="\x03"
-red="\x0305"
 green="\x0303"
+red="\x0305"
 
 # Define default values
 server=irc.freenode.net
