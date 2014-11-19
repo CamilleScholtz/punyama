@@ -369,13 +369,13 @@ while read date time nick msg; do
 			hours=$(echo "$hours-$days*60" | bc)
 
 			if [[ $days -le 0 ]]; then
-				days=''
+				days=""
 				if [[ $hours -le 0 ]]; then
-					hours=''
+					hours=""
 					if [[ $minutes -le 0 ]]; then
-						minutes=''
+						minutes=""
 						if [[ $seconds -le 0 ]]; then
-							seconds=''
+							seconds=""
 						fi
 					fi
 				fi
@@ -387,31 +387,23 @@ while read date time nick msg; do
 		# Check time
 		# TODO: Add betime thingy
 		elif [[ $msg == ".time" ]]; then
-			date +"The time is %I:%M %p~" > $in
-			
+			current=$(date +"%I:%M %p~")
+
 			seconds=$(echo "$(date -d 17:30 +"%s")-$(date +"%s")" | bc)
 			minutes=$(echo "$seconds/60" | bc)
 			hours=$(echo "$minutes/60" | bc)
-			days=$(echo "$hours/24" | bc)
 
-			seconds=$(echo "$seconds-$minutes*60" | bc)
 			minutes=$(echo "$minutes-$hours*60" | bc)
 			hours=$(echo "$hours-$days*60" | bc)
 
-			if [[ $days -le 0 ]]; then
-				days=''
-				if [[ $hours -le 0 ]]; then
-					hours=''
-					if [[ $minutes -le 0 ]]; then
-						minutes=''
-						if [[ $seconds -le 0 ]]; then
-							seconds=''
-						fi
-					fi
+			if [[ $hours -le 0 ]]; then
+				hours=""
+				if [[ $minutes -le 0 ]]; then
+					minutes=""
 				fi
 			fi
 
-			echo "$days $hours $minutes $seconds" > $in
+			echo "The time is $current, $hours hours, $minutes minutes left at work~" > $in
 		fi
 	fi
 
