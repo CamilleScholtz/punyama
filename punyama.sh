@@ -196,7 +196,7 @@ while read date time nick msg; do
 
 			# TODO: Test this, make vista and onodera versions
 			if [[ $day -le 5 ]]; then
-				left=$(expr 5 - $(date +"%u"))
+				left=$(expr 6 - $(date +"%u"))
 
 				if [[ $left -eq 1 ]]; then
 					date +"Today is a %A, $left day left until the weekend~" > $in
