@@ -409,14 +409,19 @@ while read date time nick msg; do
 			time=$(date +"%H%M")
 			current=$(date +"%I:%M %p~")
 		
+			if [[ $nick == onodera ]]; then
+				endhour="17"
+				endminute="30"
+			elif [[ $nick == Vista-Narvas ]]; then
+				endhour="17"
+				endminute="00"
+			fi
+		
 			# TODO: Check if $day and -le work
 			# TODO: Add -ge for 0900
-			if [[ $day -le 5 && $time -le 1730 ]]; then
-				if [[ $nick == onodera ]]; then
-					seconds=$(echo "$(date -d 17:30 +"%s")-$(date +"%s")" | bc)
-				elif [[ $nick == Vista-Narvas ]]; then
-					seconds=$(echo "$(date -d 17:00 +"%s")-$(date +"%s")" | bc)
-				fi
+			if [[ $day -le 5 && $time -le $endhour$endminute ]]; then
+				seconds=$(echo "$(date -d $endhour:$endminute +"%s")-$(date +"%s")" | bc)
+
 				minutes=$(echo "$seconds/60" | bc)
 				hours=$(echo "$minutes/60" | bc)
 
