@@ -199,9 +199,9 @@ while read date time nick msg; do
 				left=$(expr 6 - $(date +"%u"))
 
 				if [[ $left -eq 1 ]]; then
-					date +"Today is a %A, $left day left until the weekend~" > $in
+					date +"Today is a %A, $left day left until weekend~" > $in
 				else
-					date +"Today is a %A, $left days left until the weekend~" > $in
+					date +"Today is a %A, $left days left until weekend~" > $in
 				fi
 			else
 				date +"Today is a %A~" > $in
