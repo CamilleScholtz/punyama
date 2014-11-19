@@ -71,7 +71,6 @@ while read date time nick msg; do
 	
 	# Feel stuff
 	if [[ $msg == "tfw "* || $msg == ">tfw "* ]]; then
-		rm $HOME/.punyama/feel.txt
 		if [[ $msg == "tfw "* ]]; then
 			msg=">$msg"
 		fi
