@@ -430,9 +430,9 @@ while read date time nick msg; do
 
 				if [[ $hours -eq 1 ]]; then
 					hoursword="hour"
-					if [[ $minutes -eq 1 ]]; then
-						minutesword="minute"
-					fi
+				fi
+				if [[ $minutes -eq 1 ]]; then
+					minutesword="minute"
 				fi
 
 				echo "The time is $current, $hours $hoursword and $minutes $minutesword left at work~" > $in
