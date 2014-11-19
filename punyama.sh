@@ -41,6 +41,7 @@ while read date time nick msg; do
 		fi
 
 		# Intro
+		sleep 1
 		cat $HOME/.punyama/intro.txt | grep $fixednick | cut -d " " -f 2- > $in
 		# Message
 		# TODO: Grep returns a non-critical error here
@@ -51,6 +52,7 @@ while read date time nick msg; do
 				swapednick=onodera
 			fi
 
+			sleep 0.5
 			echo "$swapednick has left a message for you: $(cat $HOME/.punyama/msg.txt | grep $fixednick | cut -d " " -f 2-)" > $in
 			sed -i "/$fixednick .*/d" $HOME/.punyama/msg.txt
 		fi
