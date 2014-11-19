@@ -388,22 +388,29 @@ while read date time nick msg; do
 		# Check time
 		# TODO: Add betime thingy
 		elif [[ $msg == ".time" ]]; then
+			day=$(date +"%u")
+			time=$(date +"%H%M")
 			current=$(date +"%I:%M %p~")
+		
+			# TODO: Check if $day and -le and -ge work
+			if [[ $day -le 5 && $time -le 1730 && $time -ge 0900 ]]; then
+				seconds=$(echo "$(date -d 17:30 +"%s")-$(date +"%s")" | bc)
+				minutes=$(echo "$seconds/60" | bc)
+				hours=$(echo "$minutes/60" | bc)
 
-			seconds=$(echo "$(date -d 17:30 +"%s")-$(date +"%s")" | bc)
-			minutes=$(echo "$seconds/60" | bc)
-			hours=$(echo "$minutes/60" | bc)
+				minutes=$(echo "$minutes-$hours*60" | bc)
 
-			minutes=$(echo "$minutes-$hours*60" | bc)
-
-			if [[ $hours -le 0 ]]; then
-				hours=""
-				if [[ $minutes -le 0 ]]; then
-					minutes=""
+				if [[ $hours -le 0 ]]; then
+					hours=""
+					if [[ $minutes -le 0 ]]; then
+						minutes=""
+					fi
 				fi
-			fi
 
-			echo "The time is $current, $hours hours and $minutes minutes left at work~" > $in
+				echo "The time is $current, $hours hours and $minutes minutes left at work~" > $in
+			else
+				echo "The time is $current"
+			fi
 		fi
 	fi
 
