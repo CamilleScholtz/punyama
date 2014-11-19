@@ -225,7 +225,7 @@ while read date time nick msg; do
 		elif [[ $msg == ".feels" ]]; then
 			feels=$(cat $HOME/.punyama/feel.txt)
 
-			echo "$green$feels"> $in
+			echo -e "$green$feels"> $in
 
 		# Get a fortune
 		elif [[ $msg == ".fortune"* ]]; then
