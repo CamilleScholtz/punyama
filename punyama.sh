@@ -3,6 +3,7 @@
 # Define colors
 foreground="\x03"
 red="\x0305"
+red="\x0303"
 
 # Define default values
 server=irc.freenode.net
@@ -151,7 +152,7 @@ while read date time nick msg; do
 
 		# Display help
 		elif [[ $msg == ".help" ]]; then
-			echo -e ".about .calc($red!$foreground) .count .date .day .ded .feel .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
+			echo -e ".about .calc($red!$foreground) .count .date .day .ded .feels .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
@@ -221,8 +222,10 @@ while read date time nick msg; do
 
 		# Get dem feels
 		# TODO: Add .feel *
-		elif [[ $msg == ".feel" ]]; then
-			cat $HOME/.punyama/feel.txt > $in
+		elif [[ $msg == ".feels" ]]; then
+			feels=$(cat $HOME/.punyama/feel.txt)
+
+			echo "$green$feels"> $in
 
 		# Get a fortune
 		elif [[ $msg == ".fortune"* ]]; then
