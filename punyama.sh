@@ -387,23 +387,31 @@ while read date time nick msg; do
 		# Check time
 		# TODO: Add betime thingy
 		elif [[ $msg == ".time" ]]; then
-			day=$(date +"%u")
-			time=$(date +"%s")
-			debug=true
-			# TODO: Test this, make vista and onodera versions
-			# TODO: Use vistas code for this
-			#if [[ $day -le 5 && $time -le 1730 ]]; then
-			if [[ debug == true ]]; then
-				left=$(expr 1730 - $time)
+			date +"The time is %I:%M %p~" > $in
+			
+			seconds=$(echo "$(date -d 17:30 +"%s")-$(date +"%s")" | bc)
+			minutes=$(echo "$seconds/60" | bc)
+			hours=$(echo "$minutes/60" | bc)
+			days=$(echo "$hours/24" | bc)
 
-				if [[ $nick == onodera ]]; then
-					date +"The time is %I:%M %p, $left hours left~" > $in
-				elif [[ $nick == Vista-Narvas ]]; then
-					date +"The time is %I:%M %p, $left hours left~" > $in
+			seconds=$(echo "$seconds-$minutes*60" | bc)
+			minutes=$(echo "$minutes-$hours*60" | bc)
+			hours=$(echo "$hours-$days*60" | bc)
+
+			if [[ $days -le 0 ]]; then
+				days=''
+				if [[ $hours -le 0 ]]; then
+					hours=''
+					if [[ $minutes -le 0 ]]; then
+						minutes=''
+						if [[ $seconds -le 0 ]]; then
+							seconds=''
+						fi
+					fi
 				fi
-			else
-				date +"The time is %I:%M %p~" > $in
 			fi
+
+			echo "$days $hours $minutes $seconds" > $in
 		fi
 	fi
 
