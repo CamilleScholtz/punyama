@@ -68,6 +68,11 @@ while read date time nick msg; do
 			echo "$title" > $in
 		fi
 	fi
+	
+	# Feel stuff
+	if [[ $msg == "tfw "* -o || $msg == ">tfw "* ]]; then
+		echo "feel saved~" > $in
+	fi
 
 	# Check if command
 	# TODO: Add .wkuk
