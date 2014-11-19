@@ -412,7 +412,11 @@ while read date time nick msg; do
 			# TODO: Check if $day and -le work
 			# TODO: Add -ge for 0900
 			if [[ $day -le 5 && $time -le 1730 ]]; then
-				seconds=$(echo "$(date -d 17:30 +"%s")-$(date +"%s")" | bc)
+				if [[ $nick == onodera ]]; then
+					seconds=$(echo "$(date -d 17:30 +"%s")-$(date +"%s")" | bc)
+				elif [[ $nick == Vista-Narvas ]]; then
+					seconds=$(echo "$(date -d 17:00 +"%s")-$(date +"%s")" | bc)
+				fi
 				minutes=$(echo "$seconds/60" | bc)
 				hours=$(echo "$minutes/60" | bc)
 
