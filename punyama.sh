@@ -70,8 +70,9 @@ while read date time nick msg; do
 	fi
 	
 	# Feel stuff
+	# TODO: Make this
 	if [[ $msg == "tfw "* || $msg == ">tfw "* ]]; then
-		echo "feel saved~" > $in
+		echo "Feel saved~" > $in
 	fi
 
 	# Check if command
