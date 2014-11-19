@@ -441,6 +441,7 @@ while read date time nick msg; do
 					minutes=""
 				fi
 
+				# TODO: Fix space when less than one hour
 				echo "The time is $current, $hours $hoursword$minutes $minutesword left at work~" > $in
 			else
 				echo "The time is $current"
