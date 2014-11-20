@@ -238,7 +238,7 @@ while read date time nick msg; do
 				fortune -a -s science > $in
 			elif [[ $word == "cookie" ]]; then
 				fortune -a -s goedel > $in
-			elif [[ ]]; then
+			elif [[ $word == "wkuk" ]]; then
 				cat $HOME/.punyama/wkuk.txt | shuf -n 1 > $in
 			else
 				echo "Please choose one of the following subjects: cookie paradox science tech wkuk" > $in
