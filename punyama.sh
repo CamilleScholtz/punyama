@@ -109,7 +109,7 @@ while read date time nick msg; do
 					echo "Shows the current day~" > $in
 					;;
 				fortune)
-					echo "Gives a fortune, specify one of the following subjects: cookie paradox science tech" > $in
+					echo "Gives a fortune, specify one of the following subjects: cookie paradox science tech wkuk" > $in
 					;;
 				git)
 					echo "Give the github link~" > $in
@@ -238,8 +238,10 @@ while read date time nick msg; do
 				fortune -a -s science > $in
 			elif [[ $word == "cookie" ]]; then
 				fortune -a -s goedel > $in
+			elif [[ ]]; then
+				cat $HOME/.punyama/wkuk.txt | shuf -n 1 > $in
 			else
-				echo "Please choose one of the following subjects: cookie paradox science tech" > $in
+				echo "Please choose one of the following subjects: cookie paradox science tech wkuk" > $in
 			fi
 
 		elif [[ $msg == ".git" ]]; then
