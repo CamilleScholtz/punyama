@@ -420,7 +420,7 @@ while read date time nick msg; do
 		
 			# TODO: Check if $day and -le work
 			# TODO: Add -lt for 0900
-			if [[ $day -le 5 && $end -gt 0 ]]; then
+			if [[ $day -le 5 && $seconds -gt 0 ]]; then
 				minutes=$(echo "$seconds/60" | bc)
 				hours=$(echo "$minutes/60" | bc)
 
