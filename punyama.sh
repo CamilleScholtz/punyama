@@ -441,7 +441,7 @@ while read date time nick msg; do
 					hours=""
 				fi
 				if [[ $minutes -le 0 ]]; then
-					hoursword=""
+					minutesword=""
 					minutes=""
 				fi
 
