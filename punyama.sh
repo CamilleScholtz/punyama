@@ -139,7 +139,10 @@ while read date time nick msg; do
 					echo "Reloads me~" > $in
 					;;
 				stopwatch)
-					echo "info about .stopwatch" > $in
+					echo "Usage: .stopwatch [OPTION]..." > $in
+					echo "  start    starts the stopwatch" > $in
+					echo "  lap      displays the passed time" > $in
+					echo "  stop     stopes the stopwatch and displays the passed time" > $in
 					;;
 				time)
 					echo "info about .time" > $in
