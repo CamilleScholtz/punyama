@@ -386,12 +386,19 @@ while read date time nick msg; do
 			minutes=$(echo "$minutes-$hours*60" | bc)
 			hours=$(echo "$hours-$days*60" | bc)
 
+			daysword="days, "
+			hoursword="hours, "
+			minutesword="minutes and "
+
 			if [[ $days -le 0 ]]; then
 				days=""
+				daysword=""
 				if [[ $hours -le 0 ]]; then
 					hours=""
+					hoursword=""
 					if [[ $minutes -le 0 ]]; then
 						minutes=""
+						minutesword=""
 						if [[ $seconds -le 0 ]]; then
 							seconds=""
 						fi
@@ -399,7 +406,7 @@ while read date time nick msg; do
 				fi
 			fi
 
-			echo "$days days, $hours hours, $minutes, minutes and $seconds seconds until $word" > $in
+			echo "$day$daysword$hours$hoursword$minutes$minutesword$seconds seconds until $word~" > $in
 
 
 		# Check time
