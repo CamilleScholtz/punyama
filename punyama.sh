@@ -226,7 +226,7 @@ while read date time nick msg; do
 			if [[ $word == "cookie" ]]; then
 				fortune -a -s goedel > $in
 			elif [[ $word ==  "feel" ]]; then
-				cat $HOME/.punyama/feel.txt | shuf -n 1 > $in
+				echo -e $(cat $HOME/.punyama/feel.txt | shuf -n 1) > $in
 			elif [[ $word ==  "paradox" ]]; then
 				fortune -a -s paradoxum > $in
 			elif [[ $word == "tech" ]]; then
