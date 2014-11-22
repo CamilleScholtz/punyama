@@ -132,9 +132,6 @@ while read date time nick msg; do
 				pull)
 					echo "Pull in updates from git~" > $in
 					;;
-				random)
-					echo "Get a random quote~" > $in
-					;;
 				reload)
 					echo "Reloads me~" > $in
 					;;
@@ -151,7 +148,7 @@ while read date time nick msg; do
 
 		# Display help
 		elif [[ $msg == ".help" ]]; then
-			echo -e ".about .calc($red!$foreground) .count .date .day .ded .feels .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
+			echo -e ".about .calc($red!$foreground) .count .date .day .ded .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
