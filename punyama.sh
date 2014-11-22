@@ -109,7 +109,7 @@ while read date time nick msg; do
 					echo "Shows the current day~" > $in
 					;;
 				fortune)
-					echo "Gives a fortune, specify one of the following subjects: cookie paradox science tech wkuk" > $in
+					echo "Gives a fortune, specify one of the following subjects: cookie feel paradox science tech wkuk quote" > $in
 					;;
 				git)
 					echo "Give the github link~" > $in
@@ -139,11 +139,7 @@ while read date time nick msg; do
 					echo "Reloads me~" > $in
 					;;
 				stopwatch)
-					echo "Usage: .stopwatch [OPTION]..." > $in
-					echo "Calculates passed time" > $in
-					echo "  start    starts the stopwatch" > $in
-					echo "  lap      displays the passed time" > $in
-					echo "  stop     stopes the stopwatch and displays the passed time" > $in
+					echo "info about .stopwatch" > $in
 					;;
 				time)
 					echo "info about .time" > $in
@@ -223,30 +219,31 @@ while read date time nick msg; do
 		elif [[ $msg == ".ded" ]]; then
 			echo "I'm still here~" > $in
 
-		# Get dem feels
-		# TODO: Add .feel *
-		elif [[ $msg == ".feels" ]]; then
-			feels=$(cat $HOME/.punyama/feel.txt)
-
-			echo -e "$feels" > $in
-
 		# Get a fortune
-		elif [[ $msg == ".fortune"* ]]; then
+		elif [[ $msg == ".fortune "* ]]; then
 			word=$(echo $msg | cut -d " " -f 2)
 
-			if [[ $word == "tech" ]]; then
-				fortune -a -s computers linux linuxcookie > $in
+			if [[ $word == "cookie" ]]; then
+				fortune -a -s goedel > $in
+			elif [[ $word ==  "feel" ]]; then
+				cat $HOME/.punyama/feel.txt | shuf -n 1 > $in
 			elif [[ $word ==  "paradox" ]]; then
 				fortune -a -s paradoxum > $in
+			elif [[ $word == "tech" ]]; then
+				fortune -a -s computers linux linuxcookie > $in
 			elif [[ $word == "science" ]]; then
 				fortune -a -s science > $in
 			elif [[ $word == "cookie" ]]; then
 				fortune -a -s goedel > $in
 			elif [[ $word == "wkuk" ]]; then
 				cat $HOME/.punyama/wkuk.txt | shuf -n 1 > $in
-			else
-				echo "Please choose one of the following subjects: cookie paradox science tech wkuk" > $in
+			elif [[ $word == "quote" ]]; then
+				# TODO: Rice this with color.
+				cat $out | grep -v "> \." | grep "<$nick>" | shuf -n 1 | cut -d " " -f 3- > $in
 			fi
+
+		elif [[ $msg == ".fortune" ]]; then
+			echo "Please choose one of the following subjects: cookie feel paradox science tech wkuk quote" > $in
 
 		elif [[ $msg == ".git" ]]; then
 			echo "https://github.com/onodera-punpun/punyama" > $in
@@ -337,12 +334,6 @@ while read date time nick msg; do
 		# ping
 		elif [[ $msg == ".ping" ]]; then
 			echo "pong~" > $in
-
-		# Post random quote
-		# TODO: Rice this with color.
-		# TODO: Ad random *.
-		elif [[ $msg == ".random" ]]; then
-			cat $out | grep -v "> \." | grep "<$nick>" | shuf -n 1 | cut -d " " -f 3- > $in
 
 		# Stopwatch
 		elif [[ $msg == ".stopwatch"* ]]; then
