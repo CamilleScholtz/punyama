@@ -110,6 +110,7 @@ while read date time nick msg; do
 					;;
 				define)
 					echo "Define a word~" > $in
+					;;
 				fortune)
 					echo "Gives a fortune, specify one of the following subjects: cookie paradox science tech wkuk" > $in
 					;;
@@ -225,7 +226,7 @@ while read date time nick msg; do
 		elif [[ $msg == ".define "* ]]; then
 			word=$(echo $msg | cut -d " " -f 2)
 
-			sdcv $word | cut -d $'\n' -f 5- | head -n -1
+			sdcv $word | cut -d $'\n' -f 5- | head -n -1 > $in
 
 		# Define error
 		elif [[ $msg == ".define" ]]; then
