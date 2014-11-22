@@ -108,6 +108,8 @@ while read date time nick msg; do
 				day)
 					echo "Shows the current day~" > $in
 					;;
+				define)
+					echo "Define a word~" > $in
 				fortune)
 					echo "Gives a fortune, specify one of the following subjects: cookie paradox science tech wkuk" > $in
 					;;
@@ -151,7 +153,7 @@ while read date time nick msg; do
 
 		# Display help
 		elif [[ $msg == ".help" ]]; then
-			echo -e ".about .calc($red!$foreground) .count .date .day .ded .feels .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
+			echo -e ".about .calc($red!$foreground) .count .date .day .ded .define .feels .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .random($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
@@ -218,6 +220,16 @@ while read date time nick msg; do
 
 		elif [[ $msg == ".ded" ]]; then
 			echo "I'm still here~" > $in
+
+		# Define a word
+		elif [[ $msg == ".define "* ]]; then
+			word=$(echo $msg | cut -d " " -f 2)
+
+			sdcv $word | cut -d $'\n' -f 5- | head -n -1
+
+		# Define error
+		elif [[ $msg == ".define" ]]; then
+			echo "Please specify a word~" > $in
 
 		# Get dem feels
 		# TODO: Add .feel *
