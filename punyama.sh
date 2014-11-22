@@ -386,9 +386,19 @@ while read date time nick msg; do
 			minutes=$(echo "$minutes-$hours*60" | bc)
 			hours=$(echo "$hours-$days*60" | bc)
 
-			daysword="days, "
-			hoursword="hours, "
-			minutesword="minutes and "
+			daysword=" days, "
+			hoursword=" hours, "
+			minutesword=" minutes and "
+			
+			if [[ $days -eq 1 ]]; then
+				daysword=" day, "
+			fi
+			if [[ $hours -eq 1 ]]; then
+				hoursword=" hour, "
+			fi
+			if [[ $minutes -eq 1 ]]; then
+				minutesword=" minute and"
+			fi
 
 			if [[ $days -le 0 ]]; then
 				days=""
