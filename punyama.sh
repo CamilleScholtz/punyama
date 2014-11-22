@@ -374,9 +374,8 @@ while read date time nick msg; do
 			fi
 
 		# TODO: Make output pretty
-		elif [[ $msg == ".time till "* ]]; then
+		elif [[ $msg == ".time until "* ]]; then
 			word=$(echo $msg | cut -d " " -f 3-)
-			# echo "$(echo "$(date -d $word +"%s")-$(date +"%s")"|bc) seconds till $word" > $in
 	
 			seconds=$(echo "$(date -d $word +"%s")-$(date +"%s")" | bc)
 			minutes=$(echo "$seconds/60" | bc)
@@ -400,7 +399,7 @@ while read date time nick msg; do
 				fi
 			fi
 
-			echo "$days $hours $minutes $seconds" > $in
+			echo "$days days, $hours hours, $minutes, minutes and $seconds seconds until $word" > $in
 
 
 		# Check time
@@ -445,7 +444,7 @@ while read date time nick msg; do
 					minutes=""
 				fi
 
-				# TODO: Fix space when less than one hour
+				# TODO: weird minute thingy when 2/3/4/5/6/7 hour only
 				echo "The time is $current, $hours$hoursword$minutes $minutesword left at work~" > $in
 			else
 				echo "The time is $current"
