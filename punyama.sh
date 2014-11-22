@@ -140,6 +140,7 @@ while read date time nick msg; do
 					;;
 				stopwatch)
 					echo "Usage: .stopwatch [OPTION]..." > $in
+					echo "Calculates passed time" > $in
 					echo "  start    starts the stopwatch" > $in
 					echo "  lap      displays the passed time" > $in
 					echo "  stop     stopes the stopwatch and displays the passed time" > $in
