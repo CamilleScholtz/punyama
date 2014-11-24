@@ -92,6 +92,7 @@ while read date time nick msg; do
 			# TODO: Add detailed info
 			# TODO: Add .help
 			# TODO: Add .ded 
+			# TODO: Add all that other shit
 			case "$word" in
 				about)
 					echo "Display about message~" > $in
