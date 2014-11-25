@@ -7,7 +7,7 @@ password=el_psy_congroo
 silent=false
 
 if [[ $# -ge 1 ]]; then
-	for flag in "$@";do
+	for flag in "$@"; do
 		case "$flag" in
 			-h|--help)
 				echo "-h         help"
