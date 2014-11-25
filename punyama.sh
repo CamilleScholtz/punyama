@@ -110,7 +110,7 @@ while read date time nick msg; do
 					echo "Shows the current day~" > $in
 					;;
 				fortune)
-					echo "Gives a fortune, specify one of the following subjects: cookie feel paradox science tech wkuk quote" > $in
+					echo "Gives a fortune, specify one of the following subjects: cookie feel nichijou paradox science tech wkuk quote" > $in
 					;;
 				git)
 					echo "Give the github link~" > $in
@@ -233,6 +233,8 @@ while read date time nick msg; do
 				echo -e $(cat $HOME/.punyama/feel.txt | shuf -n 1) > $in
 			elif [[ $word ==  "paradox" ]]; then
 				fortune -a -s paradoxum > $in
+			elif [[ $word ==  "nichijou" ]]; then
+				cat $HOME/.punyama/nichijou.txt | shuf -n 1 > $in
 			elif [[ $word == "tech" ]]; then
 				fortune -a -s computers linux linuxcookie > $in
 			elif [[ $word == "science" ]]; then
@@ -247,7 +249,7 @@ while read date time nick msg; do
 			fi
 
 		elif [[ $msg == ".fortune" ]]; then
-			echo "Please choose one of the following subjects: cookie feel paradox science tech wkuk quote" > $in
+			echo "Please choose one of the following subjects: cookie feel nichijou paradox science tech wkuk quote" > $in
 
 		elif [[ $msg == ".git" ]]; then
 			echo "https://github.com/onodera-punpun/punyama" > $in
