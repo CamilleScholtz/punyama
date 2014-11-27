@@ -425,7 +425,7 @@ while read date time nick msg; do
 		elif [[ $msg == ".time" ]]; then
 			day=$(date +"%u")
 			time=$(date +"%H%M")
-			current=$(date +"%I:%M %p~")
+			current=$(date +"%I:%M %p")
 		
 			if [[ $nick == onodera ]]; then
 				end="17:30"
@@ -465,7 +465,7 @@ while read date time nick msg; do
 				# TODO: weird minute thingy when 2/3/4/5/6/7 hour only
 				echo "The time is $current, $hours$hoursword$minutes $minutesword left at work~" > $in
 			else
-				echo "The time is $current"
+				echo "The time is $current~"
 			fi
 		fi
 	fi
