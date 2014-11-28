@@ -179,7 +179,7 @@ while read date time nick msg; do
 			echo "Please enter a calculation~" > $in
 
 		# Count words with detailed info
-		elif [[ $msg == ".count detail" * ]]; then
+		elif [[ $msg == ".count detail "* ]]; then
 			word=$(echo $msg | cut -d " " -f 3-)
 
 			shopt -s nocasematch
