@@ -178,42 +178,88 @@ while read date time nick msg; do
 		elif [[ $msg == ".calc" ]]; then
 			echo "Please enter a calculation~" > $in
 
+		# Count words with detailed info
+		elif [[ $msg == ".count detail" * ]]; then
+			word=$(echo $msg | cut -d " " -f 3-)
+
+			shopt -s nocasematch
+			if [[ $word == "onodera" || $word == "kamiru" ]]; then
+				results=$(cat $out | grep "<onodera>")
+				echo "This may take a while~"
+
+				countndate=$(cat "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
+				count=$(echo "$countndate" | cut -d " " -f 1)
+				date=$(echo "$countndate" | cut -d " " -f 2)
+
+				number=0
+				for line in $date; do
+					number=$(expr $number + 1)
+					echo "On $(echo "$date" | head -n $number | tail -n 1) onodera has spoken $(echo "$count" | head -n $number | tail -n 1) times~"
+				done | sort > $HOME/.punyama/count.txt
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
+				url=http://a.pomf.se/$pomffile
+
+				echo "onodera has spoken $(echo "$results" | wc -l) times~" > $in
+				echo "Detailed info: $url"
+			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
+				results=$(cat $out | grep "<Vista-Narvas>")
+				echo "This may take a while~"
+
+				countndate=$(cat "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
+				count=$(echo "$countndate" | cut -d " " -f 1)
+				date=$(echo "$countndate" | cut -d " " -f 2)
+
+				number=0
+				for line in $date; do
+					number=$(expr $number + 1)
+					echo "On $(echo "$date" | head -n $number | tail -n 1) Vista-Narvas has spoken $(echo "$count" | head -n $number | tail -n 1) times~"
+				done | sort > $HOME/.punyama/count.txt
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
+				url=http://a.pomf.se/$pomffile
+
+				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times~" > $in
+				echo "Detailed info: $url"
+			else
+				results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3-)
+				echo "This may take a while~"
+
+				countndate=$(cat "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
+				count=$(echo "$countndate" | cut -d " " -f 1)
+				date=$(echo "$countndate" | cut -d " " -f 2)
+
+				number=0
+				for line in $date; do
+					number=$(expr $number + 1)
+					echo "On $(echo "$date" | head -n $number | tail -n 1) $word has been used $(echo "$count" | head -n $number | tail -n 1) times~"
+				done | sort > $HOME/.punyama/count.txt
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
+				url=http://a.pomf.se/$pomffile
+
+				echo "$word has been used $(echo "$results" | wc -l) times in total~" > $in
+				echo "Detailed info: $url"
+			fi
+			shopt -u nocasematch
+
 		# Count words
 		elif [[ $msg == ".count "* ]]; then
 			word=$(echo $msg | cut -d " " -f 2-)
 
 			shopt -s nocasematch
 			if [[ $word == "onodera" || $word == "kamiru" ]]; then
-				results=$(cat $out | grep "<onodera>")
-				echo "onodera has spoken $(echo "$results" | wc -l) times~" > $in
+				results=$(cat $out | grep "<onodera>" | wc -l)
+				echo "onodera has spoken $results times~" > $in
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
-				results=$(cat $out | grep "<Vista-Narvas>")
-				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times~" > $in
+				results=$(cat $out | grep "<Vista-Narvas>" | wc -l)
+				echo "Vista-Narvas has spoken $results times~" > $in
 			else
 				results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3- | wc -l)
-
-				if [[ $results -ge 10 ]]; then
-					echo "This may take a while~"
-
-					countndate=$(cat "$out" | grep "$word" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
-					count=$(echo "$countndate" | cut -d " " -f 1)
-					date=$(echo "$countndate" | cut -d " " -f 2)
-
-					number=0
-					for line in $date; do
-						number=$(expr $number + 1)
-						echo "On $(echo "$date" | head -n $number | tail -n 1) $word has been used $(echo "$count" | head -n $number | tail -n 1) times~"
-					done | sort > $HOME/.punyama/count.txt
-
-					upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
-					pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
-					url=http://a.pomf.se/$pomffile
-
-					echo "This word has been used $results times~" > $in
-					echo "Detailed info: $url"
-				else
-					echo "This word has been used $results times~" > $in
-				fi
+				echo "$word has been used $results times~" > $in
 			fi
 			shopt -u nocasematch
 
