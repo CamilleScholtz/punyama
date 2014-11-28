@@ -193,8 +193,8 @@ while read date time nick msg; do
 
 				number=0
 				for line in $date; do
-					number=$(expr $number + 1)
-					echo "On $(echo "$date" | head -n $number | tail -n 1) onodera has spoken $(echo "$count" | head -n $number | tail -n 1) times~"
+					((number++))
+					echo "On $(echo "$date" | cut -d $'\n' -f $number) onodera has spoken $(echo "$count" | cut -d $'\n' $number) times~"
 				done | sort > $HOME/.punyama/count.txt
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
@@ -213,8 +213,8 @@ while read date time nick msg; do
 
 				number=0
 				for line in $date; do
-					number=$(expr $number + 1)
-					echo "On $(echo "$date" | head -n $number | tail -n 1) Vista-Narvas has spoken $(echo "$count" | head -n $number | tail -n 1) times~"
+					((number++))
+					echo "On $(echo "$date" | cut -d $'\n' -f $number) Vista-Narvas has spoken $(echo "$count" | cut -d $'\n' -f $number) times~"
 				done | sort > $HOME/.punyama/count.txt
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
@@ -233,15 +233,15 @@ while read date time nick msg; do
 
 				number=0
 				for line in $date; do
-					number=$(expr $number + 1)
-					echo "On $(echo "$date" | head -n $number | tail -n 1) $word has been used $(echo "$count" | head -n $number | tail -n 1) times~"
+					((number++))
+					echo "On $(echo "$date" | cut -d $'\n' -f $number) $word has been used $(echo "$count" | cut -d $'\n' -f $number) times~"
 				done | sort > $HOME/.punyama/count.txt
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
-				echo "$word has been used $(echo "$results" | wc -l) times in total~" > $in
+				echo "$word has been used $(echo "$results" | wc -l) times in total, with an avarage of" > $in
 				echo "Detailed info: $url"
 			fi
 			shopt -u nocasematch
