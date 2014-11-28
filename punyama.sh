@@ -193,6 +193,8 @@ while read date time nick msg; do
 				results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3- | wc -l)
 
 				if [[ $results -ge 10 ]]; then
+					echo "This may take a while~"
+
 					countndate=$(cat "$out" | grep "$word" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 					count=$(echo "$countndate" | cut -d " " -f 1)
 					date=$(echo "$countndate" | cut -d " " -f 2)
@@ -208,9 +210,9 @@ while read date time nick msg; do
 					url=http://a.pomf.se/$pomffile
 
 					echo "This word has been used $results times~" > $in
-					echo "Detailed info: url"
+					echo "Detailed info: $url"
 				else
-					echo "Detailed info: url"
+					echo "This word has been used $results times~" > $in
 				fi
 			fi
 			shopt -u nocasematch
