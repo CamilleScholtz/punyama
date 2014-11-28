@@ -161,7 +161,7 @@ while read date time nick msg; do
 		elif [[ $msg == ".about" ]]; then
 			uptime=$(ps -p $(pgrep -f "bash $HOME/.punyama/pegasus.sh" | tail -n 1) -o etime= | cut -d " " -f 4-)
 			hostname=$(hostname)
-			distro=$(grep "PRETTY_NAME" "/etc/\*-release" | cut -d '"' -f 2)
+			distro=$(grep "PRETTY_NAME" "/etc/"*"-release" | cut -d '"' -f 2)
 
 			echo "punyama version $version, alive for $uptime~" > "$in"
 			echo "Hosted by $USER@$hostname, running $distro~" > "$in"
