@@ -54,7 +54,7 @@ while read date time nick msg; do
 
 			sleep 0.5
 			echo "$swapednick has left a message for you: $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)" > "$in"
-			sed -i "/$fixednick .*/d" $HOME/.punyama/msg.txt
+			sed -i "/$fixednick .*/d" "$HOME/.punyama/msg.txt"
 		fi
 	fi
 
@@ -78,7 +78,7 @@ while read date time nick msg; do
 			msg=">$msg"
 		fi
 
-		echo "$green$msg" >> $HOME/.punyama/feel.txt
+		echo "$green$msg" >> "$HOME/.punyama/feel.txt"
 	fi
 
 	# Check if command
@@ -87,7 +87,7 @@ while read date time nick msg; do
 
 		# Display detailed help
 		if [[ $msg == ".help "* ]]; then
-			word=$(echo $msg | sed 's/^\.help //')
+			word=$(echo "$msg" | sed 's/^\.help //')
 
 			# TODO: Add detailed info
 			# TODO: Add .help
@@ -170,7 +170,7 @@ while read date time nick msg; do
 		# Calculator
 		# TODO: fix weird decimals
 		elif [[ $msg == ".calc "* ]]; then
-			word=$(echo $msg | cut -d " " -f 2-)
+			word=$(echo "$msg" | cut -d " " -f 2-)
 
 			echo "scale=3; $word" | bc > "$in"
 
@@ -196,7 +196,7 @@ while read date time nick msg; do
 				for line in $date; do
 					((number++))
 					echo "On $(echo "$date" | cut -d $'\n' -f $number) onodera has spoken $(echo "$count" | cut -d $'\n' $number) times~"
-				done | sort > $HOME/.punyama/count.txt
+				done | sort > "$HOME/.punyama/count.txt"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
@@ -217,7 +217,7 @@ while read date time nick msg; do
 				for line in $date; do
 					((number++))
 					echo "On $(echo "$date" | cut -d $'\n' -f $number) Vista-Narvas has spoken $(echo "$count" | cut -d $'\n' -f $number) times~"
-				done | sort > $HOME/.punyama/count.txt
+				done | sort > "$HOME/.punyama/count.txt"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
@@ -238,7 +238,7 @@ while read date time nick msg; do
 				for line in $date; do
 					((number++))
 					echo "On $(echo "$date" | cut -d $'\n' -f $number) $word has been used $(echo "$count" | cut -d $'\n' -f $number) times~"
-				done | sort > $HOME/.punyama/count.txt
+				done | sort > "$HOME/.punyama/count.txt"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
@@ -255,10 +255,10 @@ while read date time nick msg; do
 
 			shopt -s nocasematch
 			if [[ $word == "onodera" || $word == "kamiru" ]]; then
-				results=$(grep "<onodera>" "$out" | wc -l)
+				results=$(grep -c "<onodera>" "$out")
 				echo "onodera has spoken $results times~" > "$in"
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
-				results=$(grep "<Vista-Narvas>" "$out" | wc -l)
+				results=$(grep -c "<Vista-Narvas>" "$out")
 				echo "Vista-Narvas has spoken $results times~" > "$in"
 			else
 				results=$(grep -v "<punyama>" "$out" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3- | wc -l)
@@ -280,7 +280,7 @@ while read date time nick msg; do
 
 			# TODO: Test this, make vista and onodera versions
 			if [[ $day -le 5 ]]; then
-				left=$(expr 6 - $(date +"%u"))
+				left=$((6-$(date +"%u")))
 
 				if [[ $left -eq 1 ]]; then
 					date +"Today is a %A, $left day left until weekend~" > "$in"
@@ -296,12 +296,12 @@ while read date time nick msg; do
 
 		# Get a fortune
 		elif [[ $msg == ".fortune "* ]]; then
-			word=$(echo $msg | cut -d " " -f 2)
+			word=$(echo "$msg" | cut -d " " -f 2)
 
 			if [[ $word == "cookie" ]]; then
 				fortune -a -s goedel > "$in"
 			elif [[ $word ==  "feel" ]]; then
-				echo -e $(shuf -n 1 "$HOME/.punyama/feel.txt") > "$in"
+				echo -e "$(shuf -n 1 "$HOME/.punyama/feel.txt")" > "$in"
 			elif [[ $word ==  "paradox" ]]; then
 				fortune -a -s paradoxum > "$in"
 			elif [[ $word ==  "nichijou" ]]; then
@@ -328,7 +328,7 @@ while read date time nick msg; do
 		# Grep through logs
 		# TODO: Rice this with color.
 		elif [[ $msg == ".grep "* ]]; then
-			word=$(echo $msg | cut -d " " -f 2-)
+			word=$(echo "$msg" | cut -d " " -f 2-)
 			results=$(grep -v "<punyama>" "$out" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3-)
 			#nick=$(echo "$results" | cut -d ">" -f 1 | grep -o -i "[a-z0-9\_\-]*")
 			#msg=$(echo "$results" | cut -d ">" -f 2-)
@@ -336,7 +336,7 @@ while read date time nick msg; do
 
 			if [[ $count -ge 5 ]]; then
 				echo "$results" | tail -n 3 > "$in"
-				echo "$results" > $HOME/.punyama/grep.txt
+				echo "$results" > "$HOME/.punyama/grep.txt"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/grep.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
