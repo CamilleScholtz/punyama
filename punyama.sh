@@ -371,7 +371,7 @@ while read date time nick msg; do
 
 		# Display last written messages
 		elif [[ $msg == ".last" ]]; then
-			results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | tail -n 3 | cut -d " " -f 3-)
+			results=$(grep -v "<punyama>" "$out" | grep -v "\-!\-" | grep -v "> \." | tail -n 3 | cut -d " " -f 3-)
 			echo "$results" > "$in"
 
 		# Leave message
@@ -384,7 +384,7 @@ while read date time nick msg; do
 			swapednick=onodera
 			fi
 
-			if [[ -z $(cat $HOME/.punyama/msg.txt | grep "$swapednick") ]]; then
+			if [[ -z $(grep "$swapednick" "$HOME/.punyama/msg.txt") ]]; then
 				echo "$swapednick $word" >> $HOME/.punyama/msg.txt
 				echo "Message left~" > "$in"
 			else
@@ -395,14 +395,14 @@ while read date time nick msg; do
 		# Get message
 		elif [[ $msg == ".msg" ]]; then
 			# TODO: Grep returns a non-critical error here
-			if [[ -n $(cat $HOME/.punyama/msg.txt | grep $nick | cut -d " " -f 2-) ]]; then
+			if [[ -n $(grep $nick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-) ]]; then
 				if [[ $nick == onodera ]]; then
 					swapednick=Vista-Narvas
 				elif [[ $nick == Vista-Narvas ]]; then
 					swapednick=onodera
 				fi
 
-				echo "$swapednick has left a message for you: $(cat $HOME/.punyama/msg.txt | grep $fixednick | cut -d " " -f 2-)" > "$in"
+				echo "$swapednick has left a message for you: $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)" > "$in"
 				sed -i "/$nick .*/d" $HOME/.punyama/msg.txt
 			else
 				echo "Sorry, you don't have any messages~" > "$in"
