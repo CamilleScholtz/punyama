@@ -190,7 +190,7 @@ while read date time nick msg; do
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
-				avarage=$(( ${count//$'\n'/+} ))
+				#avarage=$(( ${count//$'\n'/+} ))
 
 				number=0
 				for line in $date; do
@@ -211,7 +211,7 @@ while read date time nick msg; do
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
-				avarage=$(( ${count//$'\n'/+} ))
+				#avarage=$(( ${count//$'\n'/+} ))
 
 				number=0
 				for line in $date; do
@@ -232,7 +232,7 @@ while read date time nick msg; do
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
-				avarage=$(( ${count//$'\n'/+} ))
+				#avarage=$(( ${count//$'\n'/+} ))
 
 				number=0
 				for line in $date; do
