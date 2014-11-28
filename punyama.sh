@@ -184,7 +184,7 @@ while read date time nick msg; do
 
 			shopt -s nocasematch
 			if [[ $word == "onodera" || $word == "kamiru" ]]; then
-				results=$(cat $out | grep "<onodera>")
+				results=$(cat $out | grep -o "<onodera>")
 				echo "This may take a while~"
 
 				countndate=$(cat "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
@@ -204,7 +204,7 @@ while read date time nick msg; do
 				echo "onodera has spoken $(echo "$results" | wc -l) times~" > $in
 				echo "Detailed info: $url"
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
-				results=$(cat $out | grep "<Vista-Narvas>")
+				results=$(cat $out | grep -o "<Vista-Narvas>")
 				echo "This may take a while~"
 
 				countndate=$(cat "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
@@ -224,7 +224,7 @@ while read date time nick msg; do
 				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times~" > $in
 				echo "Detailed info: $url"
 			else
-				results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3-)
+				results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i -o "$word")
 				echo "This may take a while~"
 
 				countndate=$(cat "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
