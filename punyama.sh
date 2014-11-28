@@ -237,7 +237,7 @@ while read date time nick msg; do
 				number=0
 				for line in $date; do
 					((number++))
-					echo "On $(echo "$date" | cut -d $'\n' -f $number) $word has been used $(echo "$count" | cut -d $'\n' -f $number) times~"
+					echo "$number $(echo "$date" | cut -d $'\n' -f $number) $(echo "$count" | cut -d $'\n' -f $number)"
 				done | sort > "$HOME/.punyama/count.txt"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
