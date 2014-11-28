@@ -190,7 +190,7 @@ while read date time nick msg; do
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
-				avarage=$(let ((${count//$'\n'/+}))/$(echo $date | wc -l))
+				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
 
 				number=0
 				for line in $date; do
