@@ -193,7 +193,7 @@ while read date time nick msg; do
 				results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3- | wc -l)
 
 				if [[ $results -ge 10 ]]; then
-					countndate=$(cat "$out" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
+					countndate=$(cat "$out" | grep "$word" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 					count=$(echo "$countndate" | cut -d " " -f 1)
 					date=$(echo "$countndate" | cut -d " " -f 2)
 
