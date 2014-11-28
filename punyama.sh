@@ -190,8 +190,28 @@ while read date time nick msg; do
 				results=$(cat $out | grep "<Vista-Narvas>")
 				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times~" > $in
 			else
-				results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3-)
-				echo "This word has been used $(echo "$results" | wc -l) times~" > $in
+				results=$(cat $out | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3- | wc -l)
+
+				if [[ $results -ge 10 ]]; then
+					countndate=$(cat "$out" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
+					count=$(echo "$countndate" | cut -d " " -f 1)
+					date=$(echo "$countndate" | cut -d " " -f 2)
+
+					number=0
+					for line in $date; do
+						number=$(expr $number + 1)
+						echo "On $(echo "$date" | head -n $number | tail -n 1) $word has been used $(echo "$count" | head -n $number | tail -n 1) times~"
+					done | sort > $HOME/.punyama/count.txt
+
+					upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
+					pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
+					url=http://a.pomf.se/$pomffile
+
+					echo "This word has been used $results times~" > $in
+					echo "Detailed info: url"
+				else
+					echo "Detailed info: url"
+				fi
 			fi
 			shopt -u nocasematch
 
