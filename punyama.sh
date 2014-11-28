@@ -180,7 +180,7 @@ while read date time nick msg; do
 
 		# Count words with detailed info
 		elif [[ $msg == ".count detail "* ]]; then
-			word=$(echo $msg | cut -d " " -f 3-)
+			word=$(echo "$msg" | cut -d " " -f 3-)
 
 			shopt -s nocasematch
 			if [[ $word == "onodera" || $word == "kamiru" ]]; then
@@ -251,7 +251,7 @@ while read date time nick msg; do
 
 		# Count words
 		elif [[ $msg == ".count "* ]]; then
-			word=$(echo $msg | cut -d " " -f 2-)
+			word=$(echo "$msg" | cut -d " " -f 2-)
 
 			shopt -s nocasematch
 			if [[ $word == "onodera" || $word == "kamiru" ]]; then
@@ -342,7 +342,7 @@ while read date time nick msg; do
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
-				echo "$(expr $count - 3 ) more results: $url" > "$in"
+				echo "$(($count-3)) more results: $url" > "$in"
 			elif [[ -z $results ]]; then
 				echo "No results~" > "$in"
 			else
@@ -355,7 +355,7 @@ while read date time nick msg; do
 
 		# Set intro message
 		elif [[ $msg == ".intro "* ]]; then
-			word=$(echo $msg | cut -d " " -f 2-)
+			word=$(echo "$msg" | cut -d " " -f 2-)
 
 			if [[ -z $(grep "$nick" "$HOME/.punyama/intro.txt") ]]; then
 				echo "$nick $word" >> "$HOME/.punyama/intro.txt"
@@ -376,7 +376,7 @@ while read date time nick msg; do
 
 		# Leave message
 		elif [[ $msg == ".msg "* ]]; then
-			word=$(echo $msg | cut -d " " -f 2-)
+			word=$(echo "$msg" | cut -d " " -f 2-)
 
 			if [[ $nick == onodera ]]; then
 			swapednick=Vista-Narvas
@@ -385,10 +385,10 @@ while read date time nick msg; do
 			fi
 
 			if [[ -z $(grep "$swapednick" "$HOME/.punyama/msg.txt") ]]; then
-				echo "$swapednick $word" >> $HOME/.punyama/msg.txt
+				echo "$swapednick $word" >> "$HOME/.punyama/msg.txt"
 				echo "Message left~" > "$in"
 			else
-				sed -i "s/$swapednick .*/$swapednick $word/g" $HOME/.punyama/msg.txt
+				sed -i "s/$swapednick .*/$swapednick $word/g" "$HOME/.punyama/msg.txt"
 				echo "Message left~" > "$in"
 			fi
 
@@ -403,7 +403,7 @@ while read date time nick msg; do
 				fi
 
 				echo "$swapednick has left a message for you: $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)" > "$in"
-				sed -i "/$nick .*/d" $HOME/.punyama/msg.txt
+				sed -i "/$nick .*/d" "$HOME/.punyama/msg.txt"
 			else
 				echo "Sorry, you don't have any messages~" > "$in"
 			fi
@@ -414,7 +414,7 @@ while read date time nick msg; do
 
 		# Stopwatch
 		elif [[ $msg == ".stopwatch"* ]]; then
-			word=$(echo $msg | cut -d " " -f 2)
+			word=$(echo "$msg" | cut -d " " -f 2)
 
 			if [[ $word == "start" ]]; then
 				if [[ $stopwatch -eq 0 ]]; then
@@ -447,9 +447,9 @@ while read date time nick msg; do
 
 		# TODO: Make output pretty
 		elif [[ $msg == ".time until "* ]]; then
-			word=$(echo $msg | cut -d " " -f 3-)
+			word=$(echo "$msg" | cut -d " " -f 3-)
 	
-			seconds=$(echo "$(date -d $word +"%s")-$(date +"%s")" | bc)
+			seconds=$(echo "$(date -d "$word" +"%s")-$(date +"%s")" | bc)
 			minutes=$(echo "$seconds/60" | bc)
 			hours=$(echo "$minutes/60" | bc)
 			days=$(echo "$hours/24" | bc)
@@ -495,7 +495,6 @@ while read date time nick msg; do
 		# TODO: Add betime thingy
 		elif [[ $msg == ".time" ]]; then
 			day=$(date +"%u")
-			time=$(date +"%H%M")
 			current=$(date +"%I:%M %p")
 		
 			if [[ $nick == onodera ]]; then
@@ -537,7 +536,7 @@ while read date time nick msg; do
 				echo "The time is $current, $hours$hoursword$minutes $minutesword left at work~" > "$in"
 			else
 				echo "The time is $current~"
-			fi
+			if
 		fi
 	fi
 
