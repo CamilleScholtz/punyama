@@ -190,6 +190,7 @@ while read date time nick msg; do
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
+				avarage=$(echo $(( ${count//$'\n'/+} )))
 
 				number=0
 				for line in $date; do
@@ -201,7 +202,7 @@ while read date time nick msg; do
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
-				echo "onodera has spoken $(echo "$results" | wc -l) times~" > $in
+				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > $in
 				echo "Detailed info: $url"
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
 				results=$(echo "$out" | grep "<Vista-Narvas>")
@@ -210,6 +211,7 @@ while read date time nick msg; do
 				countndate=$(cat "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
+				avarage=$(echo $(( ${count//$'\n'/+} )))
 
 				number=0
 				for line in $date; do
@@ -221,7 +223,7 @@ while read date time nick msg; do
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
-				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times~" > $in
+				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > $in
 				echo "Detailed info: $url"
 			else
 				results=$(cat "$out" | grep -v "<punyama>" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word")
@@ -230,6 +232,7 @@ while read date time nick msg; do
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
+				avarage=$(echo $(( ${count//$'\n'/+} )))
 
 				number=0
 				for line in $date; do
@@ -241,7 +244,7 @@ while read date time nick msg; do
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
-				echo "$word has been used $(echo "$results" | wc -l) times in total, with an avarage of" > $in
+				echo "$word has been used $(echo "$results" | wc -l) times in total, with an avarage of $avarage times a day~" > $in
 				echo "Detailed info: $url"
 			fi
 			shopt -u nocasematch
