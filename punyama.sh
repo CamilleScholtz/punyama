@@ -205,7 +205,7 @@ while read date time nick msg; do
 				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
 				echo "Detailed info: $url"
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
-				results=$(echo "$out" | grep "<Vista-Narvas>")
+				results=$(grep "<Vista-Narvas>" "$out")
 				echo "This may take a while~"
 
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
@@ -305,7 +305,7 @@ while read date time nick msg; do
 			elif [[ $word ==  "paradox" ]]; then
 				fortune -a -s paradoxum > "$in"
 			elif [[ $word ==  "nichijou" ]]; then
-				echo "Here is you 日常 fix: $(shuf -n 1 "$HOME/.punyama/nichijou.txt")" > "$in"
+				echo "Here is your 日常 fix: $(shuf -n 1 "$HOME/.punyama/nichijou.txt")" > "$in"
 			elif [[ $word == "tech" ]]; then
 				fortune -a -s computers linux linuxcookie > "$in"
 			elif [[ $word == "science" ]]; then
