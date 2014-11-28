@@ -11,8 +11,8 @@ channel=doingitwell
 version=$(date +"%y%m%d-%H%M" -r "$HOME/.punyama/punyama.sh")
 
 # Make variables for in and out.
-in="$HOME/.punyama/text/$server/\#$channel/in"
-out="$HOME/.punyama/text/$server/\#$channel/out"
+in=$HOME/.punyama/text/$server/\#$channel/in
+out=$HOME/.punyama/text/$server/\#$channel/out
 
 # Say hi
 echo "Reporting in~" > "$in"
