@@ -15,7 +15,7 @@ in="$HOME/.punyama/text/$server/\#$channel/in"
 out="$HOME/.punyama/text/$server/\#$channel/out"
 
 # Say hi
-echo "Reporting in~" > "$in"
+echo "Reporting in~" > $in
 
 tailf -n 1 "$out" | \
 while read date time nick msg; do
@@ -42,7 +42,7 @@ while read date time nick msg; do
 
 		# Intro
 		sleep 1
-		grep $fixednick "$HOME/.punyama/intro.txt" | cut -d " " -f 2- > "$in"
+		grep $fixednick "$HOME/.punyama/intro.txt" | cut -d " " -f 2- > $in
 		# Message
 		# TODO: Grep returns a non-critical error here
 		if [[ -n $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-) ]]; then
@@ -53,7 +53,7 @@ while read date time nick msg; do
 			fi
 
 			sleep 0.5
-			echo "$swapednick has left a message for you: $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)" > "$in"
+			echo "$swapednick has left a message for you: $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)" > $in
 			sed -i "/$fixednick .*/d" "$HOME/.punyama/msg.txt"
 		fi
 	fi
@@ -66,9 +66,9 @@ while read date time nick msg; do
 
 		# Check if url is NSFW
 		if [[ -n $(echo "$msg $title" | grep -i "porn\|penis\|sexy\|gay\|anal\|pussy\|/b/\|nsfw\|gore") ]]; then
-			echo -e "(${red}NSFW$foreground) $title" > "$in"
+			echo -e "(${red}NSFW$foreground) $title" > $in
 		else
-			echo "$title" > "$in"
+			echo "$title" > $in
 		fi
 	fi
 	
@@ -95,67 +95,67 @@ while read date time nick msg; do
 			# TODO: Add all that other shit
 			case "$word" in
 				about)
-					echo "Display about message~" > "$in"
+					echo "Display about message~" > $in
 					;;
 				calc)
-					echo "Simple calculator~" > "$in"
+					echo "Simple calculator~" > $in
 					;;
 				count)
-					echo "Count how many times a word has been used or how many times a user has spoken, please specify at least one word or nick~" > "$in"
+					echo "Count how many times a word has been used or how many times a user has spoken, please specify at least one word or nick~" > $in
 					;;
 				date)
-					echo "Shows the current date~" > "$in"
+					echo "Shows the current date~" > $in
 					;;
 				day)
-					echo "Shows the current day~" > "$in"
+					echo "Shows the current day~" > $in
 					;;
 				fortune)
-					echo "Gives a fortune, specify one of the following subjects: cookie feel nichijou paradox science tech wkuk quote" > "$in"
+					echo "Gives a fortune, specify one of the following subjects: cookie feel nichijou paradox science tech wkuk quote" > $in
 					;;
 				git)
-					echo "Give the github link~" > "$in"
+					echo "Give the github link~" > $in
 					;;
 				grep)
-					echo "Grep through logs, please specify at least one word or nick~" > "$in"
+					echo "Grep through logs, please specify at least one word or nick~" > $in
 					;;
 				intro)
-					echo "Set or display intro~" > "$in"
+					echo "Set or display intro~" > $in
 					;;
 				last)
-					echo "Shows the last three messages~" > "$in"
+					echo "Shows the last three messages~" > $in
 					;;
 				msg)
-					echo "Message a user, the message will be displayed the next time the user joins the channel or enters the .msg command~" > "$in"
+					echo "Message a user, the message will be displayed the next time the user joins the channel or enters the .msg command~" > $in
 					;;
 				ping)
-					echo "Pong~" > "$in"
+					echo "Pong~" > $in
 					;;
 				pull)
-					echo "Pull in updates from git~" > "$in"
+					echo "Pull in updates from git~" > $in
 					;;
 				reload)
-					echo "Reloads me~" > "$in"
+					echo "Reloads me~" > $in
 					;;
 				stopwatch)
-					echo "Usage: .stopwatch [OPTION]..." > "$in"
-					echo "  start     starts the stopwatch" > "$in"
-					echo "  lap       displays the passed time" > "$in"
-					echo "  stop      stopes the stopwatch and displays the passed time" > "$in"
+					echo "Usage: .stopwatch [OPTION]..." > $in
+					echo "  start     starts the stopwatch" > $in
+					echo "  lap       displays the passed time" > $in
+					echo "  stop      stopes the stopwatch and displays the passed time" > $in
 					;;
 				time)
-					echo "Usage: .stopwatch [OPTION]... [TIME]..." > "$in"
-					echo "Display the current time" > "$in"
-					echo "  until     calculate difrence between now and the given time" > "$in"
+					echo "Usage: .stopwatch [OPTION]... [TIME]..." > $in
+					echo "Display the current time" > $in
+					echo "  until     calculate difrence between now and the given time" > $in
 					
 					;;
 				*)
-					echo "Not a valid command~" > "$in"
+					echo "Not a valid command~" > $in
 					;;
 			esac
 
 		# Display help
 		elif [[ $msg == ".help" ]]; then
-			echo -e ".about .calc($red!$foreground) .count .date .day .ded .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > "$in"
+			echo -e ".about .calc($red!$foreground) .count .date .day .ded .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > $in
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
@@ -163,8 +163,8 @@ while read date time nick msg; do
 			hostname=$(hostname)
 			distro=$(grep "PRETTY_NAME" "/etc/\*-release" | cut -d '"' -f 2)
 
-			echo "punyama version $version, alive for $uptime~" > "$in"
-			echo "Hosted by $USER@$hostname, running $distro~" > "$in"
+			echo "punyama version $version, alive for $uptime~" > $in
+			echo "Hosted by $USER@$hostname, running $distro~" > $in
 			echo "https://github.com/onodera-punpun/punyama"
 
 		# Calculator
@@ -172,11 +172,11 @@ while read date time nick msg; do
 		elif [[ $msg == ".calc "* ]]; then
 			word=$(echo "$msg" | cut -d " " -f 2-)
 
-			echo "scale=3; $word" | bc > "$in"
+			echo "scale=3; $word" | bc > $in
 
 		# Calculator error
 		elif [[ $msg == ".calc" ]]; then
-			echo "Please enter a calculation~" > "$in"
+			echo "Please enter a calculation~" > $in
 
 		# Count words with detailed info
 		elif [[ $msg == ".count detail "* ]]; then
@@ -202,7 +202,7 @@ while read date time nick msg; do
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
-				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
+				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > $in
 				echo "Detailed info: $url"
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
 				results=$(echo "$out" | grep "<Vista-Narvas>")
@@ -223,7 +223,7 @@ while read date time nick msg; do
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
-				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
+				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > $in
 				echo "Detailed info: $url"
 			else
 				results=$(grep -v "<punyama>" "$out"| grep -v "\-!\-" | grep -v "> \." | grep -i "$word")
@@ -244,7 +244,7 @@ while read date time nick msg; do
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
-				echo "$word has been used $(echo "$results" | wc -l) times in total, with an avarage of $avarage times a day~" > "$in"
+				echo "$word has been used $(echo "$results" | wc -l) times in total, with an avarage of $avarage times a day~" > $in
 				echo "Detailed info: $url"
 			fi
 			shopt -u nocasematch
@@ -256,23 +256,23 @@ while read date time nick msg; do
 			shopt -s nocasematch
 			if [[ $word == "onodera" || $word == "kamiru" ]]; then
 				results=$(grep -c "<onodera>" "$out")
-				echo "onodera has spoken $results times~" > "$in"
+				echo "onodera has spoken $results times~" > $in
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
 				results=$(grep -c "<Vista-Narvas>" "$out")
-				echo "Vista-Narvas has spoken $results times~" > "$in"
+				echo "Vista-Narvas has spoken $results times~" > $in
 			else
 				results=$(grep -v "<punyama>" "$out" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word" | cut -d " " -f 3- | wc -l)
-				echo "$word has been used $results times~" > "$in"
+				echo "$word has been used $results times~" > $in
 			fi
 			shopt -u nocasematch
 
 		# Count error
 		elif [[ $msg == ".count" ]]; then
-			echo "Please specify at least one search term~" > "$in"
+			echo "Please specify at least one search term~" > $in
 
 		# Check date
 		elif [[ $msg == ".date" ]]; then
-			date +"The date is %d %B~" > "$in"
+			date +"The date is %d %B~" > $in
 
 		# Check day
 		elif [[ $msg == ".day" ]]; then
@@ -283,47 +283,47 @@ while read date time nick msg; do
 				left=$((6-$(date +"%u")))
 
 				if [[ $left -eq 1 ]]; then
-					date +"Today is a %A, $left day left until weekend~" > "$in"
+					date +"Today is a %A, $left day left until weekend~" > $in
 				else
-					date +"Today is a %A, $left days left until weekend~" > "$in"
+					date +"Today is a %A, $left days left until weekend~" > $in
 				fi
 			else
-				date +"Today is a %A~" > "$in"
+				date +"Today is a %A~" > $in
 			fi
 
 		elif [[ $msg == ".ded" ]]; then
-			echo "I'm still here~" > "$in"
+			echo "I'm still here~" > $in
 
 		# Get a fortune
 		elif [[ $msg == ".fortune "* ]]; then
 			word=$(echo "$msg" | cut -d " " -f 2)
 
 			if [[ $word == "cookie" ]]; then
-				fortune -a -s goedel > "$in"
+				fortune -a -s goedel > $in
 			elif [[ $word ==  "feel" ]]; then
-				echo -e "$(shuf -n 1 "$HOME/.punyama/feel.txt")" > "$in"
+				echo -e "$(shuf -n 1 "$HOME/.punyama/feel.txt")" > $in
 			elif [[ $word ==  "paradox" ]]; then
-				fortune -a -s paradoxum > "$in"
+				fortune -a -s paradoxum > $in
 			elif [[ $word ==  "nichijou" ]]; then
-				echo "Here is you 日常 fix: $(shuf -n 1 "$HOME/.punyama/nichijou.txt")" > "$in"
+				echo "Here is you 日常 fix: $(shuf -n 1 "$HOME/.punyama/nichijou.txt")" > $in
 			elif [[ $word == "tech" ]]; then
-				fortune -a -s computers linux linuxcookie > "$in"
+				fortune -a -s computers linux linuxcookie > $in
 			elif [[ $word == "science" ]]; then
-				fortune -a -s science > "$in"
+				fortune -a -s science > $in
 			elif [[ $word == "cookie" ]]; then
-				fortune -a -s goedel > "$in"
+				fortune -a -s goedel > $in
 			elif [[ $word == "wkuk" ]]; then
-				echo "Here is your WKUK fix: $(shuf -n 1 "$HOME/.punyama/wkuk.txt")" > "$in"
+				echo "Here is your WKUK fix: $(shuf -n 1 "$HOME/.punyama/wkuk.txt")" > $in
 			elif [[ $word == "quote" ]]; then
 				# TODO: Rice this with color.
-				grep -v "> \." "$out" | grep "<$nick>" | shuf -n 1 | cut -d " " -f 3- > "$in"
+				grep -v "> \." "$out" | grep "<$nick>" | shuf -n 1 | cut -d " " -f 3- > $in
 			fi
 
 		elif [[ $msg == ".fortune" ]]; then
-			echo "Please choose one of the following subjects: cookie feel nichijou paradox science tech wkuk quote" > "$in"
+			echo "Please choose one of the following subjects: cookie feel nichijou paradox science tech wkuk quote" > $in
 
 		elif [[ $msg == ".git" ]]; then
-			echo "https://github.com/onodera-punpun/punyama" > "$in"
+			echo "https://github.com/onodera-punpun/punyama" > $in
 
 		# Grep through logs
 		# TODO: Rice this with color.
@@ -335,23 +335,23 @@ while read date time nick msg; do
 			count=$(echo "$results" | wc -l)
 
 			if [[ $count -ge 5 ]]; then
-				echo "$results" | tail -n 3 > "$in"
+				echo "$results" | tail -n 3 > $in
 				echo "$results" > "$HOME/.punyama/grep.txt"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/grep.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 
-				echo "$(($count-3)) more results: $url" > "$in"
+				echo "$(($count-3)) more results: $url" > $in
 			elif [[ -z $results ]]; then
-				echo "No results~" > "$in"
+				echo "No results~" > $in
 			else
-				echo "$results" > "$in"
+				echo "$results" > $in
 			fi
 
 		# Grep error
 		elif [[ $msg == ".grep" ]]; then
-			echo "Please specify at least one search term~" > "$in"
+			echo "Please specify at least one search term~" > $in
 
 		# Set intro message
 		elif [[ $msg == ".intro "* ]]; then
@@ -359,20 +359,20 @@ while read date time nick msg; do
 
 			if [[ -z $(grep "$nick" "$HOME/.punyama/intro.txt") ]]; then
 				echo "$nick $word" >> "$HOME/.punyama/intro.txt"
-				echo "Intro set~" > "$in"
+				echo "Intro set~" > $in
 			else
 				sed -i "s/$nick .*/$nick $word/g" "$HOME/.punyama/intro.txt"
-				echo "Intro set~" > "$in"
+				echo "Intro set~" > $in
 			fi
 
 		# Get intro message
 		elif [[ $msg == ".intro" ]]; then
-			echo "Your intro is: $(grep $nick "$HOME/.punyama/intro.txt" | cut -d " " -f 2-)" > "$in"
+			echo "Your intro is: $(grep $nick "$HOME/.punyama/intro.txt" | cut -d " " -f 2-)" > $in
 
 		# Display last written messages
 		elif [[ $msg == ".last" ]]; then
 			results=$(grep -v "<punyama>" "$out" | grep -v "\-!\-" | grep -v "> \." | tail -n 3 | cut -d " " -f 3-)
-			echo "$results" > "$in"
+			echo "$results" > $in
 
 		# Leave message
 		elif [[ $msg == ".msg "* ]]; then
@@ -386,10 +386,10 @@ while read date time nick msg; do
 
 			if [[ -z $(grep "$swapednick" "$HOME/.punyama/msg.txt") ]]; then
 				echo "$swapednick $word" >> "$HOME/.punyama/msg.txt"
-				echo "Message left~" > "$in"
+				echo "Message left~" > $in
 			else
 				sed -i "s/$swapednick .*/$swapednick $word/g" "$HOME/.punyama/msg.txt"
-				echo "Message left~" > "$in"
+				echo "Message left~" > $in
 			fi
 
 		# Get message
@@ -402,15 +402,15 @@ while read date time nick msg; do
 					swapednick=onodera
 				fi
 
-				echo "$swapednick has left a message for you: $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)" > "$in"
+				echo "$swapednick has left a message for you: $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)" > $in
 				sed -i "/$nick .*/d" "$HOME/.punyama/msg.txt"
 			else
-				echo "Sorry, you don't have any messages~" > "$in"
+				echo "Sorry, you don't have any messages~" > $in
 			fi
 
 		# ping
 		elif [[ $msg == ".ping" ]]; then
-			echo "pong~" > "$in"
+			echo "pong~" > $in
 
 		# Stopwatch
 		elif [[ $msg == ".stopwatch"* ]]; then
@@ -420,29 +420,29 @@ while read date time nick msg; do
 				if [[ $stopwatch -eq 0 ]]; then
 					stopwatch=$(date +"%s")
 
-					echo "The stopwatch is now running~" > "$in"
+					echo "The stopwatch is now running~" > $in
 				else
-					echo "The stopwatch is still running~" > "$in"
+					echo "The stopwatch is still running~" > $in
 				fi
 
 			elif [[ $word == "lap" ]]; then
 				if [[ stopwatch -ne 0 ]]; then
-					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed~" > "$in"
+					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed~" > $in
 				else
-					echo "The stopwatch is not running~" > "$in"
-					echo "Use .stopwatch start to start the stopwatch~" > "$in"
+					echo "The stopwatch is not running~" > $in
+					echo "Use .stopwatch start to start the stopwatch~" > $in
 				fi
 
 			elif [[ $word ==  "stop" ]]; then
 				if [[ stopwatch -ne 0 ]]; then
-					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed~" > "$in"
+					echo "$(echo "$(date +"%s")-$stopwatch" | bc) seconds have passed~" > $in
 					stopwatch=0
 				else
-					echo "Stopwatch is not running~" > "$in"
-					echo "Use .stopwatch start to start the stopwatch~" > "$in"
+					echo "Stopwatch is not running~" > $in
+					echo "Use .stopwatch start to start the stopwatch~" > $in
 				fi
 			else
-				echo "Please use one of the following options: start lap stop" > "$in"
+				echo "Please use one of the following options: start lap stop" > $in
 			fi
 
 		# TODO: Make output pretty
@@ -488,7 +488,7 @@ while read date time nick msg; do
 				fi
 			fi
 
-			echo "$day$daysword$hours$hoursword$minutes$minutesword$seconds seconds until $word~" > "$in"
+			echo "$day$daysword$hours$hoursword$minutes$minutesword$seconds seconds until $word~" > $in
 
 
 		# Check time
@@ -533,11 +533,11 @@ while read date time nick msg; do
 				fi
 
 				# TODO: weird minute thingy when 2/3/4/5/6/7 hour only
-				echo "The time is $current, $hours$hoursword$minutes $minutesword left at work~" > "$in"
+				echo "The time is $current, $hours$hoursword$minutes $minutesword left at work~" > $in
 			else
 				echo "The time is $current~"
-			if
+			fi
 		fi
 	fi
 
-done > "$in"
+done > $in
