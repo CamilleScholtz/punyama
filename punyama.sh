@@ -199,12 +199,13 @@ while read date time nick msg; do
 					echo "$(echo "$date" | cut -d $'\n' -f $number)	$(echo "$count" | cut -d $'\n' -f $number)"
 				done | sort | nl -nrz -w 4 > "$HOME/.punyama/count.txt"
 
-				# TODO: Make this $HOME
-				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"/home/onodera/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
+				shopt -u nocasematch
+				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"$HOME/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
+				shopt -s nocasematch
 
 				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
 				echo "Detailed info: $url"
