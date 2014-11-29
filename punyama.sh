@@ -190,13 +190,13 @@ while read date time nick msg; do
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
-				#avarage=$(( ${count//$'\n'/+} ))
+				avarage=$(( ${count//$'\n'/+} ))
 
 				number=0
 				for line in $date; do
 					((number++))
 					echo "$(echo "$date" | cut -d $'\n' -f $number) $(echo "$count" | cut -d $'\n' -f $number)"
-				done | sort > "$HOME/.punyama/count.txt"
+				done | sort | nl -nrz -w 3 > "$HOME/.punyama/count.txt"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
@@ -211,7 +211,7 @@ while read date time nick msg; do
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
-				#avarage=$(( ${count//$'\n'/+} ))
+				avarage=$(( ${count//$'\n'/+} ))
 
 				number=0
 				for line in $date; do
@@ -232,7 +232,7 @@ while read date time nick msg; do
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
-				#avarage=$(( ${count//$'\n'/+} ))
+				avarage=$(( ${count//$'\n'/+} ))
 
 				number=0
 				for line in $date; do
