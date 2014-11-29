@@ -184,9 +184,9 @@ while read date time nick msg; do
 
 			shopt -s nocasematch
 			if [[ $word == "onodera" || $word == "kamiru" ]]; then
-				results=$(grep "<onodera>" "$out")
 				echo "This may take a while~"
 
+				results=$(grep "<onodera>" "$out")
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
@@ -206,9 +206,9 @@ while read date time nick msg; do
 				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
 				echo "Graph: $url"
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
-				results=$(grep "<Vista-Narvas>" "$out")
 				echo "This may take a while~"
 
+				results=$(grep "<Vista-Narvas>" "$out")
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
@@ -218,10 +218,10 @@ while read date time nick msg; do
 				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal dumb 100 32;plot \"$HOME/.punyama/count.txt\" using 2:1 with linespoint;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
+				gnuplot -e "set terminal png;set xdata time;set timefmt '%Y-%m-%d';unset xtics;unset ytics;set boxwidth 3600*38 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
 
-				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.txt" "http://pomf.se/upload.php")
-				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 				shopt -s nocasematch
 
@@ -240,10 +240,10 @@ while read date time nick msg; do
 				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"$HOME/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
+				gnuplot -e "set terminal png;set xdata time;set timefmt '%Y-%m-%d';unset xtics;unset ytics;set boxwidth 3600*38 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
 
-				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.txt" "http://pomf.se/upload.php")
-				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 				shopt -s nocasematch
 
