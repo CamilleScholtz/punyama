@@ -191,13 +191,13 @@ while read date time nick msg; do
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
 				# TODO: fix this
-				avarage=$(let "${count//$'\n'/+} / $(echo $date | wc -l)")
+				avarage=$(("${count//$'\n'/+} / $(echo $date | wc -l)))
 
 				number=0
 				for line in $date; do
 					((number++))
 					echo "$(echo "$date" | cut -d $'\n' -f $number)	$(echo "$count" | cut -d $'\n' -f $number)"
-				done | sort | nl -nrz -w 4 > "$HOME/.punyama/count.txt"
+				done | sort | nl -nrz -w 4 | sed 's/\"\/home\/onodera\/.punyama\/count.txt\" using\ 1:3 \*\*\*\*\*\* +/       +          +           +          +          +/g' > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
 				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"$HOME/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
@@ -222,7 +222,7 @@ while read date time nick msg; do
 				for line in $date; do
 					((number++))
 					echo "$(echo "$date" | cut -d $'\n' -f $number)	$(echo "$count" | cut -d $'\n' -f $number)"
-				done | sort | nl -nrz -w 4 > "$HOME/.punyama/count.txt"
+				done | sort | nl -nrz -w 4 | sed 's/\"\/home\/onodera\/.punyama\/count.txt\" using\ 1:3 \*\*\*\*\*\* +/       +          +           +          +          +/g' > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
 				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"$HOME/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
@@ -247,7 +247,7 @@ while read date time nick msg; do
 				for line in $date; do
 					((number++))
 					echo "$(echo "$date" | cut -d $'\n' -f $number)	$(echo "$count" | cut -d $'\n' -f $number)"
-				done | sort | nl -nrz -w 4 > "$HOME/.punyama/count.txt"
+				done | sort | nl -nrz -w 4 | sed 's/\"\/home\/onodera\/.punyama\/count.txt\" using\ 1:3 \*\*\*\*\*\* +/       +          +           +          +          +/g' > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
 				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"$HOME/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
