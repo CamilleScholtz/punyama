@@ -209,16 +209,13 @@ while read date time nick msg; do
 				results=$(grep "<Vista-Narvas>" "$out")
 				echo "This may take a while~"
 
-				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
-				count=$(echo "$countndate" | cut -d " " -f 1)
-				date=$(echo "$countndate" | cut -d " " -f 2)
-				avarage=$(( ${count//$'\n'/+} ))
+				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g" | nl -nrz -w 3)
+				echo "$countndate" > "$HOME/.punyama/count.txt"
 
-				number=0
-				for line in $date; do
-					((number++))
-					echo "$(echo "$date" | cut -d $'\n' -f $number)	$(echo "$count" | cut -d $'\n' -f $number)"
-				done | sort | nl -nrz -w 4 > "$HOME/.punyama/count.txt"
+				# TODO: fix this
+				count=$(echo "$countndate" | cut -d "	" -f 2)
+				date=$(echo "$countndate" | cut -d "	" -f 3)
+				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
 
 				shopt -u nocasematch
 				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"$HOME/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
@@ -234,16 +231,13 @@ while read date time nick msg; do
 				results=$(grep -v "<punyama>" "$out"| grep -v "\-!\-" | grep -v "> \." | grep -i "$word")
 				echo "This may take a while~"
 
-				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//")
-				count=$(echo "$countndate" | cut -d " " -f 1)
-				date=$(echo "$countndate" | cut -d " " -f 2)
-				avarage=$(( ${count//$'\n'/+} ))
+				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g" | nl -nrz -w 3)
+				echo "$countndate" > "$HOME/.punyama/count.txt"
 
-				number=0
-				for line in $date; do
-					((number++))
-					echo "$(echo "$date" | cut -d $'\n' -f $number)	$(echo "$count" | cut -d $'\n' -f $number)"
-				done | sort | nl -nrz -w 4 > "$HOME/.punyama/count.txt"
+				# TODO: fix this
+				count=$(echo "$countndate" | cut -d "	" -f 2)
+				date=$(echo "$countndate" | cut -d "	" -f 3)
+				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
 
 				shopt -u nocasematch
 				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"$HOME/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
