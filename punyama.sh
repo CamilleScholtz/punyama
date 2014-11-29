@@ -221,12 +221,16 @@ while read date time nick msg; do
 				number=0
 				for line in $date; do
 					((number++))
-					echo "On $(echo "$date" | cut -d $'\n' -f $number) Vista-Narvas has spoken $(echo "$count" | cut -d $'\n' -f $number) times~"
-				done | sort > "$HOME/.punyama/count.txt"
+					echo "$(echo "$date" | cut -d $'\n' -f $number)	$(echo "$count" | cut -d $'\n' -f $number)"
+				done | sort | nl -nrz -w 4 > "$HOME/.punyama/count.txt"
 
-				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
+				shopt -u nocasematch
+				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"$HOME/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
+				shopt -s nocasematch
 
 				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
 				echo "Detailed info: $url"
@@ -242,12 +246,16 @@ while read date time nick msg; do
 				number=0
 				for line in $date; do
 					((number++))
-					echo "On $(echo "$date" | cut -d $'\n' -f $number) $word has been used $(echo "$count" | cut -d $'\n' -f $number) times~"
-				done | sort > "$HOME/.punyama/count.txt"
+					echo "$(echo "$date" | cut -d $'\n' -f $number)	$(echo "$count" | cut -d $'\n' -f $number)"
+				done | sort | nl -nrz -w 4 > "$HOME/.punyama/count.txt"
 
-				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/count.txt" "http://pomf.se/upload.php")
+				shopt -u nocasematch
+				gnuplot -e "set terminal dumb 100 32;set boxwidth 0.1;plot \"$HOME/.punyama/count.txt\" using 1:3 with boxes;" | cut -d $'\n' -f 3- | head -n -2 > "$HOME/.punyama/graph.txt"
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.txt" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.txt",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
+				shopt -s nocasematch
 
 				echo "$word has been used $(echo "$results" | wc -l) times in total, with an avarage of $avarage times a day~" > "$in"
 				echo "Detailed info: $url"
