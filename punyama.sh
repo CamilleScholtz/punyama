@@ -191,12 +191,12 @@ while read date time nick msg; do
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
 				# TODO: fix this
-				count=$(echo "$countndate" | cut -d "	" -f 2)
-				date=$(echo "$countndate" | cut -d "	" -f 3)
+				count=$(echo "$countndate" | cut -d "	" -f 1)
+				date=$(echo "$countndate" | cut -d "	" -f 2)
 				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'stats for onodera';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '$(echo "$date" | cut -d $'\n' -f 1)' : '$(echo "$date" | tail -n 1)' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
+				gnuplot -e "set terminal png tiny;set title 'stats for onodera';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
