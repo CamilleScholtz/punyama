@@ -184,9 +184,8 @@ while read date time nick msg; do
 
 			shopt -s nocasematch
 			if [[ $word == "onodera" || $word == "kamiru" ]]; then
-				echo "This may take a while~"
-
 				results=$(grep "<onodera>" "$out")
+
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
@@ -206,15 +205,14 @@ while read date time nick msg; do
 				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
 				echo "Graph: $url"
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
-				echo "This may take a while~"
-
 				results=$(grep "<Vista-Narvas>" "$out")
+
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
 				# TODO: fix this
-				count=$(echo "$countndate" | cut -d "	" -f 2)
-				date=$(echo "$countndate" | cut -d "	" -f 3)
+				count=$(echo "$countndate" | cut -d "	" -f 1)
+				date=$(echo "$countndate" | cut -d "	" -f 2)
 				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
 
 				shopt -u nocasematch
@@ -229,14 +227,13 @@ while read date time nick msg; do
 				echo "Graph: $url"
 			else
 				results=$(grep -v "<punyama>" "$out"| grep -v "\-!\-" | grep -v "> \." | grep -i "$word")
-				echo "This may take a while~"
 
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
 				# TODO: fix this
-				count=$(echo "$countndate" | cut -d "	" -f 2)
-				date=$(echo "$countndate" | cut -d "	" -f 3)
+				count=$(echo "$countndate" | cut -d "	" -f 1)
+				date=$(echo "$countndate" | cut -d "	" -f 2)
 				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
 
 				shopt -u nocasematch
