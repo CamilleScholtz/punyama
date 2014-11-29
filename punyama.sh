@@ -191,7 +191,7 @@ while read date time nick msg; do
 				count=$(echo "$countndate" | cut -d " " -f 1)
 				date=$(echo "$countndate" | cut -d " " -f 2)
 				# TODO: fix this
-				avarage=$(("${count//$'\n'/+} / $(echo $date | wc -l)))
+				avarage=$((${count//$'\n'/+} / $(echo $date | wc -l)))
 
 				number=0
 				for line in $date; do
