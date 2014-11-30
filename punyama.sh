@@ -256,7 +256,7 @@ while read date time nick msg; do
 
 		# Count words with detailed info
 		elif [[ $msg == ".graph "* ]]; then
-			word=$(echo "$msg" | cut -d " " -f 3-)
+			word=$(echo "$msg" | cut -d " " -f 2-)
 
 			shopt -s nocasematch
 			if [[ $word == "all" ]]; then
