@@ -269,7 +269,7 @@ while read date time nick msg; do
 				echo "$countndate2" > "$HOME/.punyama/count2.txt"
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'Stats for everyone~';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count1.txt' using 2:1 notitle 'pattern 1' with boxes lt -1,'$HOME/.punyama/count2.txt' using 2:1 notitle 'pattern 2' with boxes lt -1;" > "$HOME/.punyama/graph.png"
+				gnuplot -e "set terminal png tiny;set title 'Stats for everyone~';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;set style histogram rowstacked;plot '$HOME/.punyama/count1.txt' using 2:1 notitle 'pattern 1' with boxes lt -1,'$HOME/.punyama/count2.txt' using 2:1 notitle 'pattern 2' with boxes lt -1;" > "$HOME/.punyama/graph.png"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
