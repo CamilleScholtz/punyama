@@ -263,8 +263,8 @@ while read date time nick msg; do
 				results1=$(cut -d " " -f -3 "$out" | grep -E "<onodera.*>|<kamiru.*>|<camille.*>")
 				results2=$(cut -d " " -f -3 "$out" | grep -E "<Vista-Narvas.*>|<Vista_Narvas.*>")
 
-				echo "$results1" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" >"$HOME/.punyama/count1.txt"
-				echo "$results2" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" cut -d " " -f 1 > "$HOME/.punyama/count2.txt"
+				echo "$results1" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" > "$HOME/.punyama/count1.txt"
+				echo "$results2" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | cut -d " " -f 1 > "$HOME/.punyama/count2.txt"
 				paste -d " " "$HOME/.punyama/count2.txt" "$HOME/.punyama/count1.txt" > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
