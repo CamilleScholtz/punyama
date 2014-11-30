@@ -268,7 +268,7 @@ while read date time nick msg; do
 				paste -d " " "$HOME/.punyama/count2.txt" "$HOME/.punyama/count1.txt" > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny size '769x480';set title 'Stats for onodera and Vista-Narvas~';set style data histograms;set style histogram rowstacked;set style fill pattern 1 border;unset xtics;plot '$HOME/.punyama/count.txt' using 2:xtic(strftime('%d', strptime('%Y-%m-%d', strcol(1)))) title 'onodera' lt -1,'' using 1 title 'Vista-Narvas' lt -1;" > "$HOME/.punyama/graph.png"
+				gnuplot -e "set terminal png tiny size '768x480';set title 'Stats for onodera and Vista-Narvas~';set format x '%Y-%m-%d';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set style fill pattern 1 border;set boxwidth 24*3600 absolute;plot '$HOME/.punyama/count.txt' using 3:(\$1+\$1) with boxes title 'onodera' lt -1,'' using 3:1 with boxes title 'Vista-Narvas' lt -1;" > "$HOME/.punyama/graph.png"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
