@@ -155,7 +155,7 @@ while read date time nick msg; do
 
 		# Display help
 		elif [[ $msg == ".help" ]]; then
-			echo -e ".about .calc($red!$foreground) .count .date .day .ded .fortune .git .grep($red!$foreground) .intro .kill .last($red!$foreground) .msg .ping .pull($red!$foreground) .reload($red!$foreground) .stopwatch($red!$foreground) .time($red!$foreground)" > "$in"
+			echo -e ".about .calc .count .date .day .ded .fortune .git .graph .grep .intro .kill .last .msg .ping .pull .reload .stopwatch .time" > "$in"
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
@@ -177,105 +177,6 @@ while read date time nick msg; do
 		# Calculator error
 		elif [[ $msg == ".calc" ]]; then
 			echo "Please enter a calculation~" > "$in"
-
-		# Count words with detailed info
-		elif [[ $msg == ".count detail "* ]]; then
-			word=$(echo "$msg" | cut -d " " -f 3-)
-
-			shopt -s nocasematch
-			if [[ $word == "all" ]]; then
-				results1=$(cut -d " " -f -3 "$out" | grep -E "<onodera.*>|<kamiru.*>|<camille.*>" "$out")
-				results2=$(cut -d " " -f -3 "$out" | grep -E "<Vista-Narvas.*>|<Vista_Narvas.*>" "$out")
-
-				countndate1=$(echo "$results1" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
-				countndate2=$(echo "$results2" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
-				echo "$countndate1" > "$HOME/.punyama/count1.txt"
-				echo "$countndate2" > "$HOME/.punyama/count2.txt"
-
-				# TODO: fix this
-				count=$(echo "$countndate" | cut -d "	" -f 1)
-				date=$(echo "$countndate" | cut -d "	" -f 2)
-				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
-
-				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'stats for onodera';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count1.txt' using 2:1 notitle 'pattern 1' with boxes lt -1,'$HOME/.punyama/count2.txt' using 2:1 notitle 'pattern 2' with boxes lt -1;" > "$HOME/.punyama/graph.png"
-
-				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
-				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
-				url=http://a.pomf.se/$pomffile
-				shopt -s nocasematch
-
-				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
-				echo "Graph: $url"
-			elif [[ $word == "onodera" || $word == "kamiru" ]]; then
-				results=$(grep "<onodera>" "$out")
-
-				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
-				echo "$countndate" > "$HOME/.punyama/count.txt"
-
-				# TODO: fix this
-				count=$(echo "$countndate" | cut -d "	" -f 1)
-				date=$(echo "$countndate" | cut -d "	" -f 2)
-				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
-
-				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'stats for onodera';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
-
-				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
-				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
-				url=http://a.pomf.se/$pomffile
-				shopt -s nocasematch
-
-				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
-				echo "Graph: $url"
-			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
-				results=$(grep "<Vista-Narvas>" "$out")
-
-				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
-				echo "$countndate" > "$HOME/.punyama/count.txt"
-
-				# TODO: fix this
-				count=$(echo "$countndate" | cut -d "	" -f 1)
-				date=$(echo "$countndate" | cut -d "	" -f 2)
-				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
-
-				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'stats for Vista-Narvas';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
-
-				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
-				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
-				url=http://a.pomf.se/$pomffile
-				shopt -s nocasematch
-
-				echo "Vista-Narvas has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
-				echo "Graph: $url"
-			else
-				results=$(grep -v "<punyama>" "$out"| grep -v "\-!\-" | grep -v "> \." | grep -i "$word")
-
-				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
-				echo "$countndate" > "$HOME/.punyama/count.txt"
-
-				# TODO: fix this
-				count=$(echo "$countndate" | cut -d "	" -f 1)
-				date=$(echo "$countndate" | cut -d "	" -f 2)
-				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
-
-				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'stats for $word';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
-
-				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
-				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
-				url=http://a.pomf.se/$pomffile
-				shopt -s nocasematch
-
-				echo "$word has been used $(echo "$results" | wc -l) times in total, with an avarage of $avarage times a day~" > "$in"
-				echo "Graph: $url"
-			fi
-			shopt -u nocasematch
-
-		# Count word with detailed info error
-		elif [[ $msg == ".count detail" ]]; then
-			echo "Please specify at least one search term~" > "$in"
 
 		# Count words
 		elif [[ $msg == ".count "* ]]; then
@@ -352,6 +253,81 @@ while read date time nick msg; do
 
 		elif [[ $msg == ".git" ]]; then
 			echo "https://github.com/onodera-punpun/punyama" > "$in"
+
+		# Count words with detailed info
+		elif [[ $msg == ".graph "* ]]; then
+			word=$(echo "$msg" | cut -d " " -f 3-)
+
+			shopt -s nocasematch
+			if [[ $word == "all" ]]; then
+				results1=$(cut -d " " -f -3 "$out" | grep -E "<onodera.*>|<kamiru.*>|<camille.*>" "$out")
+				results2=$(cut -d " " -f -3 "$out" | grep -E "<Vista-Narvas.*>|<Vista_Narvas.*>" "$out")
+
+				countndate1=$(echo "$results1" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				countndate2=$(echo "$results2" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				echo "$countndate1" > "$HOME/.punyama/count1.txt"
+				echo "$countndate2" > "$HOME/.punyama/count2.txt"
+
+				shopt -u nocasematch
+				gnuplot -e "set terminal png tiny;set title 'Stats for everyone~';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count1.txt' using 2:1 notitle 'pattern 1' with boxes lt -1,'$HOME/.punyama/count2.txt' using 2:1 notitle 'pattern 2' with boxes lt -1;" > "$HOME/.punyama/graph.png"
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
+				url=http://a.pomf.se/$pomffile
+				shopt -s nocasematch
+
+				echo "Here is your graph for everyone: $url"
+			elif [[ $word == "onodera" || $word == "kamiru" ]]; then
+				results=$(cut -d " " -f -3 "$out" | grep -E "<onodera.*>|<kamiru.*>|<camille.*>" "$out")
+
+				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				echo "$countndate" > "$HOME/.punyama/count.txt"
+
+				shopt -u nocasematch
+				gnuplot -e "set terminal png tiny;set title 'Stats for onodera~';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
+				url=http://a.pomf.se/$pomffile
+				shopt -s nocasematch
+
+				echo "Here is your graph for onodera: $url"
+			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
+				results=$(cut -d " " -f -3 "$out" | grep -E "<Vista-Narvas.*>|<Vista_Narvas.*>" "$out")
+
+				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				echo "$countndate" > "$HOME/.punyama/count.txt"
+
+				shopt -u nocasematch
+				gnuplot -e "set terminal png tiny;set title 'Stats for Vista-Narvas~';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
+				url=http://a.pomf.se/$pomffile
+				shopt -s nocasematch
+
+				echo "Here is your graph for Vista-Narvas: $url"
+			else
+				results=$(grep -v "<punyama>" "$out" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word")
+
+				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				echo "$countndate" > "$HOME/.punyama/count.txt"
+
+				shopt -u nocasematch
+				gnuplot -e "set terminal png tiny;set title 'Stats for $word~';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle 'pattern 1' with boxes lt -1;" > "$HOME/.punyama/graph.png"
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
+				url=http://a.pomf.se/$pomffile
+				shopt -s nocasematch
+
+				echo "Here is your graph for $word: $url"
+			fi
+			shopt -u nocasematch
+
+		# Count word with detailed info error
+		elif [[ $msg == ".graph" ]]; then
+			echo "Please specify at least one search term~" > "$in"
 
 		# Grep through logs
 		# TODO: Rice this with color.
