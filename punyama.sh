@@ -306,7 +306,7 @@ while read date time nick msg; do
 				shopt -s nocasematch
 
 				echo "Here is your graph for Vista-Narvas: $url"
-			elif [[ $(echo $msg | wc -w) -eq 2 ]]; then
+			elif [[ $(echo "$msg" | wc -w) -eq 3 ]]; then
 				word1=$(echo "$word" | cut -d " " -f 1)
 				word2=$(echo "$word" | cut -d " " -f 2)
 
@@ -326,7 +326,7 @@ while read date time nick msg; do
 				shopt -s nocasematch
 
 				echo "Here is your graph for $word1 and $word2: $url"
-			elif [[ $(echo $msg | wc -w) -eq 1 ]]; then
+			elif [[ $(echo "$msg" | wc -w) -eq 2 ]]; then
 				results=$(grep -E -v "<punyama>|\-\!\-" "$out" | cut -d " " -f -3 | grep "$word")
 
 				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//")
