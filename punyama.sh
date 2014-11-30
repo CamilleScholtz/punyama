@@ -263,24 +263,24 @@ while read date time nick msg; do
 				results1=$(cut -d " " -f -3 "$out" | grep -E "<onodera.*>|<kamiru.*>|<camille.*>" "$out")
 				results2=$(cut -d " " -f -3 "$out" | grep -E "<Vista-Narvas.*>|<Vista_Narvas.*>" "$out")
 
-				countndate1=$(echo "$results1" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
-				countndate2=$(echo "$results2" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				countndate1=$(echo "$results1" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//")
+				countndate2=$(echo "$results2" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//")
 				echo "$countndate1" > "$HOME/.punyama/count1.txt"
 				echo "$countndate2" > "$HOME/.punyama/count2.txt"
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'Stats for everyone~';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;set style data histogram;set style histogram rowstacked;plot '$HOME/.punyama/count1.txt' using 2:1 title 'onodera' 'pattern 1' with boxes lt -1,'$HOME/.punyama/count2.txt' using 2:1 title 'Vista-Narvas' 'pattern 2' with boxes lt -1;" > "$HOME/.punyama/graph.png"
+				gnuplot -e "set terminal png tiny;set title 'Stats for all~';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;set style data histogram;set style histogram rowstacked;plot '$HOME/.punyama/count1.txt' using 2:1 title 'onodera' 'pattern 1' with boxes lt -1,'$HOME/.punyama/count2.txt' using 2:1 title 'Vista-Narvas' 'pattern 2' with boxes lt -1;" > "$HOME/.punyama/graph.png"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 				shopt -s nocasematch
 
-				echo "Here is your graph for everyone: $url"
+				echo "Here is your graph for all: $url"
 			elif [[ $word == "onodera" || $word == "kamiru" ]]; then
 				results=$(cut -d " " -f -3 "$out" | grep -E "<onodera.*>|<kamiru.*>|<camille.*>" "$out")
 
-				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//")
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
@@ -295,7 +295,7 @@ while read date time nick msg; do
 			elif [[ $word == "Vista-Narvas" || $word == "Vista_Narvas" ]]; then
 				results=$(cut -d " " -f -3 "$out" | grep -E "<Vista-Narvas.*>|<Vista_Narvas.*>" "$out")
 
-				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//")
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
@@ -308,9 +308,9 @@ while read date time nick msg; do
 
 				echo "Here is your graph for Vista-Narvas: $url"
 			else
-				results=$(grep -v "<punyama>" "$out" | grep -v "\-!\-" | grep -v "> \." | grep -i "$word")
+				results=$(grep -E -v "<punyama>|\-\!\-" "$out" | cut -d " " -f -3 | grep "$word" "$out")
 
-				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//")
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
