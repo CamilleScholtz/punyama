@@ -183,7 +183,31 @@ while read date time nick msg; do
 			word=$(echo "$msg" | cut -d " " -f 3-)
 
 			shopt -s nocasematch
-			if [[ $word == "onodera" || $word == "kamiru" ]]; then
+			if [[ $word == "all" ]]; then
+				results1=$(cut -d " " -f -3 "$out" | grep -E "<onodera.*>|<kamiru.*>|<camille.*>" "$out")
+				results2=$(cut -d " " -f -3 "$out" | grep -E "<Vista-Narvas.*>|<Vista_Narvas.*>" "$out")
+
+				countndate1=$(echo "$results1" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				countndate2=$(echo "$results2" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
+				echo "$countndate1" > "$HOME/.punyama/count1.txt"
+				echo "$countndate2" > "$HOME/.punyama/count2.txt"
+
+				# TODO: fix this
+				count=$(echo "$countndate" | cut -d "	" -f 1)
+				date=$(echo "$countndate" | cut -d "	" -f 2)
+				avarage=$(let "((${count//$'\n'/+})) / $(echo $date | wc -l)")
+
+				shopt -u nocasematch
+				gnuplot -e "set terminal png tiny;set title 'stats for onodera';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count1.txt' using 2:1 notitle 'pattern 1' with boxes lt -1,'$HOME/.punyama/count2.txt' using 2:1 notitle 'pattern 2' with boxes lt -1;" > "$HOME/.punyama/graph.png"
+
+				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
+				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
+				url=http://a.pomf.se/$pomffile
+				shopt -s nocasematch
+
+				echo "onodera has spoken $(echo "$results" | wc -l) times, with an avarage of $avarage times a day~" > "$in"
+				echo "Graph: $url"
+			elif [[ $word == "onodera" || $word == "kamiru" ]]; then
 				results=$(grep "<onodera>" "$out")
 
 				countndate=$(echo "$results" | grep -o "^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]" | uniq -c | sed "s/^\s*//" | sed "s/ /	/g")
@@ -248,6 +272,10 @@ while read date time nick msg; do
 				echo "Graph: $url"
 			fi
 			shopt -u nocasematch
+
+		# Count word with detailed info error
+		elif [[ $msg == ".count detail" ]]; then
+			echo "Please specify at least one search term~" > "$in"
 
 		# Count words
 		elif [[ $msg == ".count "* ]]; then
