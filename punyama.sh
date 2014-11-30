@@ -310,8 +310,8 @@ while read date time nick msg; do
 				word1=$(echo "$word" | cut -d " " -f 1)
 				word2=$(echo "$word" | cut -d " " -f 2)
 
-				results1=$(grep -E -v "<punyama>|\-\!\-" "$out" | cut -d " " -f -3 | grep "$word1")
-				results1=$(grep -E -v "<punyama>|\-\!\-" "$out" | cut -d " " -f -3 | grep "$word2")
+				results1=$(grep -E -v "<punyama>|\-\!\-" "$out" | grep "$word1" | cut -d " " -f -3)
+				results2=$(grep -E -v "<punyama>|\-\!\-" "$out" | grep "$word2" | cut -d " " -f -3)
 
 				echo "$results1" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" > "$HOME/.punyama/count1.txt"
 				echo "$results2" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" | cut -d " " -f 1 > "$HOME/.punyama/count2.txt"
@@ -327,7 +327,7 @@ while read date time nick msg; do
 
 				echo "Here is your graph for $word1 and $word2: $url"
 			elif [[ $(echo "$msg" | wc -w) -eq 2 ]]; then
-				results=$(grep -E -v "<punyama>|\-\!\-" "$out" | cut -d " " -f -3 | grep "$word")
+				results=$(grep -E -v "<punyama>|\-\!\-" "$out" | grep "$word" | cut -d " " -f -3)
 
 				countndate=$(echo "$results" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//")
 				echo "$countndate" > "$HOME/.punyama/count.txt"
