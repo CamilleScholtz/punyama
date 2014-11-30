@@ -268,14 +268,14 @@ while read date time nick msg; do
 				paste -d " " "$HOME/.punyama/count2.txt" "$HOME/.punyama/count1.txt" > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'Stats for all~';set style data histograms;set style histogram rowstacked;set style fill pattern 1 border;unset xtics;plot '$HOME/.punyama/count.txt' using 2:xtic(strftime('%d', strptime('%Y-%m-%d', strcol(1)))) title 'onodera' lt -1,'' using 1 title 'Vista-Narvas' lt -1;" > "$HOME/.punyama/graph.png"
+				gnuplot -e "set terminal png tiny size '769x480';set title 'Stats for onodera and Vista-Narvas~';set style data histograms;set style histogram rowstacked;set style fill pattern 1 border;unset xtics;plot '$HOME/.punyama/count.txt' using 2:xtic(strftime('%d', strptime('%Y-%m-%d', strcol(1)))) title 'onodera' lt -1,'' using 1 title 'Vista-Narvas' lt -1;" > "$HOME/.punyama/graph.png"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
 				url=http://a.pomf.se/$pomffile
 				shopt -s nocasematch
 
-				echo "Here is your graph for all: $url"
+				echo "Here is your graph for onodera and Vista-Narvas: $url"
 			elif [[ $word == "onodera" || $word == "kamiru" ]]; then
 				results=$(cut -d " " -f -3 "$out" | grep -E "<onodera.*>|<kamiru.*>|<camille.*>")
 
@@ -283,7 +283,7 @@ while read date time nick msg; do
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'Stats for onodera~';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set boxwidth 3600*40 absolute;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:1 notitle  with boxes lt -1;" > "$HOME/.punyama/graph.png"
+				gnuplot -e "set terminal png tiny size '769x480';set title 'Stats for onodera~';set style data histograms;set style histogram rowstacked;set style fill pattern 1 border;unset xtics;plot '$HOME/.punyama/count.txt' using 1:xtic(strftime('%d', strptime('%Y-%m-%d', strcol(1)))) notitle lt -1;" using 1 title 'onodera' lt -1;" > "$HOME/.punyama/graph.png"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
