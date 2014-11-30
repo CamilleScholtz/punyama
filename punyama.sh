@@ -265,11 +265,10 @@ while read date time nick msg; do
 
 				echo "$results1" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" >"$HOME/.punyama/count1.txt"
 				echo "$results2" | cut -d " " -f 1 | uniq -c | sed "s/^\s*//" cut -d " " -f 1 > "$HOME/.punyama/count2.txt"
-
 				paste -d " " "$HOME/.punyama/count2.txt" "$HOME/.punyama/count1.txt" > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny;set title 'Stats for onodera and Vista-Narvas~';set style data histograms;set style histogram rowstacked;set style fill pattern 1 border;plot '$HOME/.punyama/count.txt' using 2:xtic(strftime('%d', strptime('%Y-%m-%d', strcol(1)))) title 'onodera' lt -1,'' using 1 title 'Vista-Narvas' lt -1;" > "$HOME/.punyama/graph.png"
+				gnuplot -e "set terminal png tiny;set title 'Stats for all~';set style data histograms;set style histogram rowstacked;set style fill pattern 1 border;unset xtics;plot '$HOME/.punyama/count.txt' using 2:xtic(strftime('%d', strptime('%Y-%m-%d', strcol(1)))) title 'onodera' lt -1,'' using 1 title 'Vista-Narvas' lt -1;" > "$HOME/.punyama/graph.png"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
