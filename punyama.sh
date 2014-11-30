@@ -283,7 +283,7 @@ while read date time nick msg; do
 				echo "$countndate" > "$HOME/.punyama/count.txt"
 
 				shopt -u nocasematch
-				gnuplot -e "set terminal png tiny size '769x480';set title 'Stats for onodera~';set style data histograms;set style histogram rowstacked;set style fill pattern 1 border;unset xtics;plot '$HOME/.punyama/count.txt' using 1:xtic(strftime('%d', strptime('%Y-%m-%d', strcol(1)))) notitle lt -1;" using 1 title 'onodera' lt -1;" > "$HOME/.punyama/graph.png"
+				gnuplot -e "set terminal png tiny size '769x480';set title 'Stats for onodera~';set style data histograms;set style histogram rowstacked;set style fill pattern 1 border;unset xtics;plot '$HOME/.punyama/count.txt' using 1:xtic(strftime('%d', strptime('%Y-%m-%d', strcol(1)))) notitle lt -1;" > "$HOME/.punyama/graph.png"
 
 				upload=$(curl --silent -sf -F files[]="@$HOME/.punyama/graph.png" "http://pomf.se/upload.php")
 				pomffile=$(echo "$upload" | grep -E -o '"url":"[A-Za-z0-9]+.png",' | sed 's/"url":"//;s/",//')
