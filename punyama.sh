@@ -22,45 +22,46 @@ while read date time nick msg; do
 
 	# Strip < and >, if msg is by ourself ignore it
 	nick="${nick:1:-1}"
-	[[ $nick == "punyama" ]] && continue
+	[[ "$nick" == "punyama" ]] && continue
 
 	# Fix nicks
 	shopt -s nocasematch
-	if [[ $nick == "Vista-Narvas"* || $nick == "Vista_Narvas"* ]]; then
+	if [[ "$nick" == "Vista-Narvas"* || "$nick" == "Vista_Narvas"* ]]; then
 		nick=Vista-Narvas
-	elif [[ $nick == "onodera"* || $nick == "kamiru"* || $nick == "camille"* ]]; then
+	elif [[ "$nick" == "onodera"* || "$nick" == "kamiru"* || "$nick" == "camille"* ]]; then
 		nick=onodera
 	fi
 	shopt -u nocasematch
 
 	# Join stuff
-	if [[ $nick == ! && -n $(tail -n 1 "$out" | grep "has joined") ]]; then
-		fixednick=$(echo "$msg" | cut -d "(" -f 1)
-		if [[ $fixednick == Vista_Narvas ]]; then
+	if [[ "$nick" == "!" && -n "$(tail -n 1 "$out" | grep "has joined")" ]]; then
+		# TODO: Add fixed onodera if here?
+		fixednick="$(echo "$msg" | cut -d "(" -f 1)"
+		if [[ "$fixednick" == "Vista_Narvas" ]]; then
 			fixednick=Vista-Narvas
 		fi
 
 		# Intro
 		sleep 1
-		grep $fixednick "$HOME/.punyama/intro.txt" | cut -d " " -f 2- > "$in"
+		grep "$fixednick" "$HOME/.punyama/intro.txt" | cut -d " " -f 2- > "$in"
 		# Message
-		# TODO: Grep returns a non-critical error here
-		if [[ -n $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-) ]]; then
-			if [[ $fixednick == onodera ]]; then
+		# TODO: Grep returns a non-critical error here?
+		if [[ -n "$(grep "$fixednick" "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)" ]]; then
+			if [[ "$fixednick" == "onodera" ]]; then
 				swapednick=Vista-Narvas
-			elif [[ $fixednick == Vista-Narvas ]]; then
+			elif [[ "$fixednick" == "Vista-Narvas" ]]; then
 				swapednick=onodera
 			fi
 
 			sleep 0.5
-			echo "$swapednick has left a message for you: $(grep $fixednick "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)" > "$in"
+			echo "$swapednick has left a message for you: "$(grep "$fixednick" "$HOME/.punyama/msg.txt" | cut -d " " -f 2-)"" > "$in"
 			sed -i "/$fixednick .*/d" "$HOME/.punyama/msg.txt"
 		fi
 	fi
 
 	# Website stuff
 	# TODO: filter png/jpg thingy
-	if [[ $msg =~ https?:// && -z $(echo "$msg" | grep -i -s ".*[a-z0-9].png") && -z $(echo "$msg" | grep -i -s ".*[a-z0-9].jpg") ]]; then
+	if [[ "$msg" =~ "https?://" && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].png")" && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].jpg")" ]]; then
 		url=$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")
 		title=$(curl -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xmlstarlet unesc)
 
