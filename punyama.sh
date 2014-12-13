@@ -8,11 +8,11 @@ red="\x0305"
 # Define default values
 server=irc.freenode.net
 channel=doingitwell
-version=$(date +"%y%m%d-%H%M" -r "$HOME/.punyama/punyama.sh")
+version="$(date +"%y%m%d-%H%M" -r "$HOME/.punyama/punyama.sh")"
 
 # Make variables for in and out.
-in=$HOME/.punyama/text/$server/\#$channel/in
-out=$HOME/.punyama/text/$server/\#$channel/out
+in="$HOME/.punyama/text/$server/#$channel/in"
+out="$HOME/.punyama/text/$server/#$channel/out"
 
 # Say hi
 echo "Reporting in~" > "$in"
@@ -306,6 +306,7 @@ while read date time nick msg; do
 				shopt -s nocasematch
 
 				echo "Here is your graph for Vista-Narvas: $url"
+			# TODO: Fix this one (something with time)
 			elif [[ $(echo "$msg" | wc -w) -eq 3 ]]; then
 				word1=$(echo "$word" | cut -d " " -f 1)
 				word2=$(echo "$word" | cut -d " " -f 2)
