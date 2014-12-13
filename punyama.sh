@@ -61,12 +61,12 @@ while read date time nick msg; do
 
 	# Website stuff
 	# TODO: filter png/jpg thingy
-	if [[ "$msg" =~ "https?://" && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].png")" && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].jpg")" ]]; then
-		url=$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")
-		title=$(curl -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xmlstarlet unesc)
+	if [[ "$msg" =~ https?:// && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].png")" && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].jpg")" ]]; then
+		url="$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")"
+		title="$(curl -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xmlstarlet unesc)"
 
 		# Check if url is NSFW
-		if [[ -n $(echo "$msg $title" | grep -i "porn\|penis\|sexy\|gay\|anal\|pussy\|/b/\|nsfw\|gore") ]]; then
+		if [[ -n "$(echo "$msg $title" | grep -i "porn\|penis\|sexy\|gay\|anal\|pussy\|/b/\|nsfw\|gore")" ]]; then
 			echo -e "(${red}NSFW$foreground) $title" > "$in"
 		else
 			echo "$title" > "$in"
