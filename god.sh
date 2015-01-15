@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Define default values
-server=irc.freenode.net
-channel=doingitwell
-password=el_psy_congroo
+server=irc.rizon.net
+password=
+channel=grape
 silent=false
 
 if [[ $# -ge 1 ]]; then
