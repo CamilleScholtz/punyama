@@ -3,7 +3,7 @@
 # Define default values
 server=irc.rizon.net
 password=
-channel=grape
+channel=soup
 silent=false
 
 if [[ $# -ge 1 ]]; then
