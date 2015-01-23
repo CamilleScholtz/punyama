@@ -2,7 +2,7 @@
 
 # Define default values
 server=irc.rizon.net
-channel=soup
+channel=grape
 
 # Make variables for in and out.
 in=$HOME/.punyama/text/$server/\#$channel/in
