@@ -42,7 +42,7 @@ fi
 # Lauch ii
 if [[ -z "$(pgrep -f "ii -i "$HOME/.punyama/text" -s "$server" -n punyama")" ]]; then
 	ii -i "$HOME/.punyama/text" -s "$server" -n punyama &
-	if [[ $silent == false ]]; then
+	if [[ "$silent" == false ]]; then
 		echo "Starting ii."
 	fi
 	sleep 0.5
