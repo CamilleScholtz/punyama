@@ -48,7 +48,7 @@ if [[ -z $(pgrep -f "ii -i $HOME/.punyama/text -s $server -n punyama") ]]; then
 	sleep 0.5
 
 	# Connect to channel
-	echo "/j #$channel $password" > $HOME/.punyama/text/$server/in
+	echo "/j #$channel" > $HOME/.punyama/text/$server/in
 	if [[ $silent == false ]]; then
 		echo "Connecting to $channel@$server."
 	fi
