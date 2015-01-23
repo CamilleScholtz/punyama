@@ -156,7 +156,7 @@ while read date time nick msg; do
 
 		# Display help
 		elif [[ $msg == ".help" ]]; then
-			echo -e ".about .calc .count .date .day .ded .fortune .git .graph .grep .intro .kill .last .msg .ping .pull .reload .stopwatch .time" > "$in"
+			echo -e ".about .bots .calc .count .date .day .ded .fortune .git .graph .grep .intro .kill .last .msg .ping .pull .reload .stopwatch .time" > "$in"
 
 		# About message
 		elif [[ $msg == ".about" ]]; then
@@ -167,6 +167,9 @@ while read date time nick msg; do
 			echo "punyama version $version, alive for $uptime~" > "$in"
 			echo "Hosted by $USER@$hostname, running $distro~" > "$in"
 			echo "https://github.com/onodera-punpun/punyama"
+
+		elif [[ $msg == ".bots" ]]; then
+			echo "Reporting in~ [bash]" > "$in"
 
 		# Calculator
 		# TODO: fix weird decimals
