@@ -7,7 +7,7 @@ red="\x0305"
 
 # Define default values
 server=irc.rizon.net
-channel=soup
+channel=grape
 version="$(date +"%y%m%d-%H%M" -r "$HOME/.punyama/punyama.sh")"
 
 # Make variables for in and out.
