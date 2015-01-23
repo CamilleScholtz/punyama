@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define default values
-server=irc.freenode.net
-channel=doingitwell
+server=irc.rizon.net
+channel=soup
 
 # Make variables for in and out.
 in=$HOME/.punyama/text/$server/\#$channel/in
