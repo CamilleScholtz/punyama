@@ -5,7 +5,7 @@ server=irc.rizon.net
 channel=grape
 silent=false
 
-if [[ $# -ge 1 ]]; then
+if [[ "$#" -ge 1 ]]; then
 	for flag in "$@"; do
 		case "$flag" in
 			-h|--help)
@@ -32,7 +32,7 @@ if [[ $# -ge 1 ]]; then
 				silent=true
 				;;
 			-u)
-				cd $HOME/.punyama
+				cd "$HOME/.punyama"
 				git pull
 				;;
 		esac
@@ -40,40 +40,40 @@ if [[ $# -ge 1 ]]; then
 fi
 
 # Lauch ii
-if [[ -z $(pgrep -f "ii -i $HOME/.punyama/text -s $server -n punyama") ]]; then
-	ii -i $HOME/.punyama/text -s $server -n punyama &
+if [[ -z "$(pgrep -f "ii -i "$HOME/.punyama/text" -s "$server" -n punyama")" ]]; then
+	ii -i "$HOME/.punyama/text" -s "$server" -n punyama &
 	if [[ $silent == false ]]; then
 		echo "Starting ii."
 	fi
 	sleep 0.5
 
 	# Connect to channel
-	echo "/j #$channel" > $HOME/.punyama/text/$server/in
-	if [[ $silent == false ]]; then
+	echo "/j #$channel" > "$HOME/.punyama/text/$server/in"
+	if [[ "$silent" == false ]]; then
 		echo "Connecting to $channel@$server."
 	fi
 	sleep 0.5
-elif [[ $silent == false ]]; then
+elif [[ "$silent" == false ]]; then
 	echo "ii is running."
 fi
 
 # Launch pegasus
-if [[ -z $(pgrep -f "bash $HOME/.punyama/pegasus.sh") ]]; then
-	bash $HOME/.punyama/pegasus.sh & disown
-	if [[ $silent == false ]]; then
+if [[ -z "$(pgrep -f "bash $HOME/.punyama/pegasus.sh")" ]]; then
+	bash "$HOME/.punyama/pegasus.sh" & disown
+	if [[ "$silent" == false ]]; then
 		echo "Starting pegasus."
 	fi
-elif [[ $silent == false ]]; then
+elif [[ "$silent" == false ]]; then
 	echo "pegasus is running."
 fi
 
 # Lauch punyama
-if [[ -z $(pgrep -f "bash $HOME/.punyama/punyama.sh") ]]; then
-	bash $HOME/.punyama/punyama.sh & disown
-	if [[ $silent == false ]]; then
+if [[ -z "$(pgrep -f "bash $HOME/.punyama/punyama.sh")" ]]; then
+	bash "$HOME/.punyama/punyama.sh" & disown
+	if [[ "$silent" == false ]]; then
 		echo "Starting punyama."
 	fi
-elif [[ $silent == false ]]; then
+elif [[ "$silent" == false ]]; then
 	echo "punyama is running."
 fi
 
