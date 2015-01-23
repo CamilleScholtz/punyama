@@ -2,7 +2,6 @@
 
 # Define default values
 server=irc.rizon.net
-password=
 channel=grape
 silent=false
 
