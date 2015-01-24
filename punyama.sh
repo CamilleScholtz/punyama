@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# this
+# is
+# a
+# test
+
 # Define colors
 foreground="\x03"
 green="\x0303"
