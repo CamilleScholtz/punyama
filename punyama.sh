@@ -213,7 +213,7 @@ while read date time nick msg; do
 
 					gnuplot -e "set terminal png tiny size '768x480';set title 'Stats for $word1 and $word2~';set format x '%Y-%m-%d';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set style fill pattern 1 border;set boxwidth 24*3600 absolute;plot '/tmp/count.txt' using 3:(\$2+\$1) with boxes title '$word1' lt -1,'' using 3:1 with boxes title '$word2' lt -1;" > "/tmp/graph.png"
 
-					url="$(pomf "/tmp/graph.png")"
+					url="$(curl --silent -F file="@/tmp/graph.png" "http://uguu.se/api.php?d=upload")"
 
 					echo "Here is your graph for $word1 and $word2: $url"
 				elif [[ "$word" -eq 1 ]]; then
@@ -224,7 +224,7 @@ while read date time nick msg; do
 
 					gnuplot -e "set terminal png tiny size '768x480';set title 'Stats for $word~';set format x '%Y-%m-%d';set xdata time;set timefmt '%Y-%m-%d';set xrange [ '2014-09-14' : '$(date +"%Y-%m-%d")' ];set style fill pattern 1 border;set boxwidth 24*3600 absolute;plot '/tmp/count.txt' using 2:1 with boxes notitle lt -1;" > "/tmp/graph.png"
 
-					url="$(pomf "/tmp/graph.png")"
+					url="$(curl --silent -F file="@/tmp/graph.png" "http://uguu.se/api.php?d=upload")"
 
 					echo "Here is your graph for $word: $url"
 				else
@@ -244,13 +244,13 @@ while read date time nick msg; do
 				#msg=$(echo "$results" | cut -d ">" -f 2-)
 				count="$(echo "$results" | wc -l)"
 
-				if [[ "$count" -ge 5 ]]; then
-					echo "$results" | tail -n 3 > "$in"
+				if [[ "$count" -gt 2 ]]; then
+					echo "$results" | tail -n 2 > "$in"
 					echo "$results" > "/tmp/grep.txt"
 
-					url="$(pomf "/tmp/grep.txt")"
+					url="$(curl --silent -F file="@/tmp/grep.txt" "http://uguu.se/api.php?d=upload")"
 
-					echo "$((count-3)) more results: $url" > "$in"
+					echo "$((count - 2)) more results: $url" > "$in"
 				elif [[ -z "$results" ]]; then
 					echo "No results~" > "$in"
 				else
@@ -293,19 +293,26 @@ while read date time nick msg; do
 					fi
 				elif [[ "$word" ==  "stop" ]]; then
 					if [[ "$stopwatch" -ne 0 ]]; then
-						echo "Stopping stopwatch, $(((date +"%s") - stopwatch)) seconds have passed~" > "$in"
+						seconds="$(date +"%s")"
+
+						echo "Stopping stopwatch, $((seconds - stopwatch)) seconds have passed~" > "$in"
 						stopwatch=0
 					else
 						echo "Stopwatch is not running~" > "$in"
 						echo "Use .stopwatch start to start the stopwatch~" > "$in"
 					fi
 				else
-					if [[ "$stopwatch" -ne 0 ]]; then
-						echo "$(((date +"%s") - stopwatch)) seconds have passed~" > "$in"
-					else
-						echo "The stopwatch is not running~" > "$in"
-						echo "Use .stopwatch start to start the stopwatch~" > "$in"
-					fi
+					echo "Please use either start or stop~" > "$in"
+				fi
+				;;
+			.stopwatch)
+				if [[ "$stopwatch" -ne 0 ]]; then
+					seconds="$(date +"%s")"
+
+					echo "$((seconds - stopwatch)) seconds have passed~" > "$in"
+				else
+					echo "The stopwatch is not running~" > "$in"
+					echo "Use .stopwatch start to start the stopwatch~" > "$in"
 				fi
 				;;
 			# TODO: Make output pretty
