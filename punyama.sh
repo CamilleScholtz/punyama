@@ -31,7 +31,7 @@ while read date time nick msg; do
 	# TODO: filter png/jpg thingy
 	if [[ "$msg" =~ https?:// && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].png")" && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].jpg")" ]]; then
 		url="$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")"
-		title="$(curl -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xmlstarlet unesc)"
+		title="$(curl -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml unesc)"
 
 		if [[ -n "$(echo "$msg $title" | grep -i "porn\|penis\|sexy\|gay\|anal\|pussy\|/b/\|/h/\|/hm/\|/gif/\|nsfw\|gore")" ]]; then
 			echo -e "(${red}NSFW$foreground) $title" > "$in"
@@ -124,12 +124,13 @@ while read date time nick msg; do
 			.bots)
 				echo "Reporting in~ [bash]" > "$in"
 				;;
-			".calc "*)
+			".calc "*|".cacl "*)
 				word="$(echo "$msg" | cut -d " " -f 2-)"
 
+				# TODO: Fix this shit once again
 				echo "$((word))" > "$in"
 				;;
-			.calc)
+			.calc|.cacl)
 				echo "Please enter a calculation~" > "$in"
 				;;
 			# TODO: Fix weird user name shit
