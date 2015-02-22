@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: Move git to source
-
 foreground="\x03"
 green="\x0303"
 red="\x0305"
@@ -17,7 +15,6 @@ echo "Reporting in~" > "$in"
 
 tailf -n 1 $out | \
 while read date time nick msg; do
-
 	nick="${nick:1:-1}"
 	[[ "$nick" == "punyama" ]] && continue
 
@@ -29,18 +26,23 @@ while read date time nick msg; do
 	fi
 
 	# TODO: filter png/jpg thingy
-	if [[ "$msg" =~ https?:// && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].png")" && -z "$(echo "$msg" | grep -i -s ".*[a-z0-9].jpg")" ]]; then
+	if [[ "$msg" =~ https?:// ]]; then
 		url="$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")"
-		title="$(curl -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml unesc)"
+		# TODO: Fix xml unesc
+		title="$(curl -L -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml -q unesc)"
 
-		if [[ -n "$(echo "$msg $title" | grep -i "porn\|penis\|sexy\|gay\|anal\|pussy\|/b/\|/h/\|/hm/\|/gif/\|nsfw\|gore")" ]]; then
+		if [[ -n "$(echo "$msg $title" | grep -i "porn\|penis\|sexy\|gay\|anal\|pussy\|/b/\|/h/\|/hm/\|/gif/\|nsfw\|gore\|sex\|lewd")" ]]; then
 			echo -e "(${red}NSFW$foreground) $title" > "$in"
 		else
 			echo "$title" > "$in"
 		fi
 	fi
+
+	if [[ "$msg" =~ ^s/*/*/ ]]; then
+		tac "$out" | grep "<$nick>" | cut -d $'\n' -f 2 | cut -d " " -f 4- | echo "<$nick> $(sed "$msg")" > "$in"
+	fi
 	
-	if [[ $msg == "tfw "* || $msg == ">tfw "* ]]; then
+	if [[ "$msg" == "tfw "* || "$msg" == ">tfw "* ]]; then
 		if [[ $msg == "tfw "* ]]; then
 			msg=">$msg"
 		fi
@@ -107,8 +109,7 @@ while read date time nick msg; do
 				echo -e ".about .bots .calc .count .date .day .ded .fortune .graph .grep .intro .kill .ping .pull .reload .source .stopwatch .time" > "$in"
 				;;
 			.about)
-				# TODO: Fix uptime
-				#uptime="$(ps -p $(pgrep -f "bash $HOME/.punyama/pegasus.sh" | tail -n 1) -o etime= | cut -d " " -f 4-)"
+				uptime="$(ps -p $(pgrep -f "bash $HOME/.punyama/pegasus.sh" | tail -n 1) -o etime= | grep -o "[0-9]*:[0-9]*:[0-9]*")"
 				hostname="$(hostname)"
 				crux="$(crux)"
 				if [[ -z "$crux" ]]; then
