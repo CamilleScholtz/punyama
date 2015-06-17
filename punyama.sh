@@ -17,11 +17,12 @@ botpass=Derpaderp1
 # Set server
 server="irc.rizon.net"
 
-# Set colors
+# Set colors (term)
 fg="\e[0;39m"
-c1="\e[1;33m"
-c2="\e[1;30m"
-c3="\e[1;32m"
+c1="\e[1;31m"
+c2="\e[1;33m"
+c3="\e[1;30m"
+
 
 ## FUCNTIONS
 
@@ -47,7 +48,7 @@ join() {
 	channels="$(cat "$configdir/channels")"
 
 	for channel in $channels; do
-		echo -e "Joining $c1$channel$fg."
+		echo "Joining $channel."
 		echo "/j $channel" > "$si"
 
 		# Set channel in & out
@@ -71,10 +72,13 @@ truefalse() {
 
 # This function echoes to ii
 echoii() {
-	echo -e "$@" > "$i"
+	if [[ -n "$@" ]]; then
+		echo -e "​$@" > "$i"
+	fi
 
-	echo -e "<$nick> $c1$msg$fg"
-	echo -e " $c2->$fg $@"
+	echo -e "<$nick> $c2$msg$fg"
+	# TODO: Make this support multi line stuff
+	echo -e " $c3->$fg $@"
 }
 
 
@@ -83,17 +87,15 @@ echoii() {
 startii
 join
 
+# Set colors (irc)
+fgii="\x03"
+c1ii="\x034"
+
 # Hello world
 #echoii "Reporting in~"
 
 tailf -n 1 "$o" | \
 while read date time nick msg; do
-	# Ignore self
-	nick="${nick:1:-1}"
-	if [[ "$nick" == "$botnick" ]]; then
-		continue
-	fi
-
 	# Website title
 	if [[ "$msg" =~ https?:// ]]; then
 		truefalse "http"
@@ -101,8 +103,8 @@ while read date time nick msg; do
 		url="$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")"
 		title="$(curl -L -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml -q unesc)"
 
-		if [[ -n "$(echo "$msg $title" | grep -i "porn\|penis\|sexy\|gay\|anal\|pussy\|/b/\|/h/\|/hm/\|/gif/\|nsfw\|gore\|sex\|lewd")" ]]; then
-			echoii "[${c3}NSFW$fg] $title"
+		if [[ -n "$(echo "$msg $title" | grep -i "porn\|penis\|hentai\|gay\|anal\|pussy\|vagina\|/b/\|/hm/\|/gif/\|nsfw\|gore\|sex\|lewd")" ]]; then
+			echoii "[${c1ii}NSFW$fgii] $title"
 		else
 			echoii "$title"
 		fi
@@ -120,6 +122,7 @@ while read date time nick msg; do
 	if [[ "$msg" == "."* ]]; then
 		case "$msg" in
 
+			# TODO: Add list command
 			## ADMIN COMMANDS
 
 			# Disable commands
@@ -178,7 +181,6 @@ while read date time nick msg; do
 			;;
 
 
-
 			## FUN COMMANDS
 
 			# Ded message
@@ -188,17 +190,20 @@ while read date time nick msg; do
 				echoii "I'm still here~"
 			;;
 
-			# Get fortunes, currently supports 'quote'
+			# Random fortune message
 			".fortune "*)
 				truefalse "fun"
 
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				case "$query" in
+					keynpeele|mega64|nasheed|nichijou|onion|wkuk)
+						echoii "$(cat "$configdir/fortune/$query" | shuf -n 1)"
+						;;
 					quote)
-						quote="$(grep -v "> \." "$o" | grep "<$nick>" | shuf -n 1 | cut -d " " -f 3-)"
-						echoii "$quote"
-					;;
+						# TODO: Make other nicks quotable
+						echoii "$(grep -v "> \." "$o" | grep -v "<$botnick>" | grep "<$nick>" | shuf -n 1 | cut -d " " -f 3-)"
+						;;
 				esac
 			;;
 
@@ -225,13 +230,13 @@ while read date time nick msg; do
 
 				query="$(echo "$msg" | cut -d " " -f 2-)"
 
-				results="$(grep -v "<punyama>" "$o" | grep -v "\-!\-" | grep -v "> \." | grep -i "$query" | cut -d " " -f 3-)"
+				results="$(grep -v "<$botnick>" "$o" | grep -v "\-!\-" | grep -v "> \." | grep -i "$query" | cut -d " " -f 3-)"
 				count="$(echo "$results" | wc -l)"
 
 				# If more than 3 results, upload, else echo
 				if [[ "$count" -ge 3 ]]; then
 					echo "$results" > "/tmp/grep.txt"
-					url="$(punf "/tmp/grep.txt" | cut -d " " -f 3)"
+					url="$(punf -q "/tmp/grep.txt")"
 
 					echoii "$count results: $url"
 				elif [[ -z "$results" ]]; then
@@ -253,7 +258,7 @@ while read date time nick msg; do
 			.fortune)
 				truefalse "fun"
 
-				echoii "Please choose one of the following subjects: 'quote'~"
+				echoii "Please choose one of the following subjects: 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
 			;;
 
 			# Grep error
@@ -262,7 +267,6 @@ while read date time nick msg; do
 
 				echoii "Please specify at least one search term~"
 			;;
-
 		esac
 	fi
 done
