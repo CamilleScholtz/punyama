@@ -21,7 +21,7 @@ server="irc.rizon.net"
 fg="\e[0;39m"
 c1="\e[1;33m"
 c2="\e[1;30m"
-
+c3="\e[1;32m"
 
 ## FUCNTIONS
 
@@ -71,7 +71,7 @@ truefalse() {
 
 # This function echoes to ii
 echoii() {
-	echo "$@" > "$i"
+	echo -e "$@" > "$i"
 
 	echo -e "<$nick> $c1$msg$fg"
 	echo -e " $c2->$fg $@"
@@ -99,13 +99,12 @@ while read date time nick msg; do
 		truefalse "http"
 
 		url="$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")"
-		# TODO: Fix xml unesc
 		title="$(curl -L -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml -q unesc)"
 
 		if [[ -n "$(echo "$msg $title" | grep -i "porn\|penis\|sexy\|gay\|anal\|pussy\|/b/\|/h/\|/hm/\|/gif/\|nsfw\|gore\|sex\|lewd")" ]]; then
-			echo -e "(${red}NSFW$foreground) $title" > "$in"
+			echoii "[${c3}NSFW$fg] $title"
 		else
-			echo "$title" > "$in"
+			echoii "$title"
 		fi
 	fi
 
@@ -210,7 +209,7 @@ while read date time nick msg; do
 				echoii "pong~"
 			;;
 
-			# Allahu ackbar
+			# Allahu akbar
 			.takbir)
 				truefalse "fun"
 
