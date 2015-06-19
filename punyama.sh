@@ -12,7 +12,7 @@ configdir="$botdir/config"
 botnick=punyama
 
 # Set bot pass
-botpass=Derpaderp1
+botpass=derpaderp1
 
 # Set server
 server="irc.rizon.net"
@@ -34,27 +34,24 @@ startii() {
 		ii -i "$botdir/ii" -s "$server" -n $botnick & disown
 	fi
 
-	# Set server in & out paths
-	si="$botdir/ii/$server/in"
-	so="$botdir/ii/$server/out"
-
-	# Msg NickServ
-	echo "/j NickServ IDENTIFY $botpass" > "$si"
-	sleep 0.5
+	# Set server in path
+	serverin="$botdir/ii/$server/in"
 }
 
 # This function makes the bot join channels
 join() {
+	# Msg NickServ
+	echo "IDENTIFY $botpass" > "$botdir/ii/$server/nickserv/in"
+	sleep 1
+
 	channels="$(cat "$configdir/channels")"
 
 	for channel in $channels; do
-		echo "Joining $channel."
-		echo "/j $channel" > "$si"
+		echo -e "Joining $c2$channel$fg."
+		echo "/j $channel" > "$serverin"
 
-		# Set channel in & out
-		# TODO: Right now it echoes to all channels(?)
-		i+="$botdir/ii/$server/$channel/in"
-		o+="$botdir/ii/$server/$channel/out"
+		# Set channel out path
+		out+="$botdir/ii/$server/$channel/out "
 	done
 	echo ""
 }
@@ -72,13 +69,11 @@ truefalse() {
 
 # This function echoes to ii
 echoii() {
-	if [[ -n "$@" ]]; then
-		echo -e "​$@" > "$i"
-	fi
+	echo -e "​$@" > "$botdir/ii/$server/$activechannel/in"
 
-	echo -e "<$nick> $c2$msg$fg"
+	echo -e "<$c2$nick$c3@$c2$activechannel$fg> $msg"
 	# TODO: Make this support multi line stuff
-	echo -e " $c3->$fg $@"
+	echo -e "$c3->$fg $@"
 }
 
 
@@ -94,19 +89,32 @@ c1ii="\x034"
 # Hello world
 #echoii "Reporting in~"
 
-tailf -n 1 "$o" | \
+tail -f -v -n 1 $out | \
 while read date time nick msg; do
+	# Check channel
+	if [[ "$date" == "==>" ]]; then
+		activechannel="$(echo "$time" | rev | cut -d "/" -f 2 | rev)"
+
+		# TODO: Change to break?
+		continue
+	fi
+
+	# Fix nicks
+	nick="${nick:1:-1}"
+
 	# Website title
 	if [[ "$msg" =~ https?:// ]]; then
-		truefalse "http"
+		truefalse "url"
 
 		url="$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")"
 		title="$(curl -L -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml -q unesc)"
 
-		if [[ -n "$(echo "$msg $title" | grep -i "porn\|penis\|hentai\|gay\|anal\|pussy\|vagina\|/b/\|/hm/\|/gif/\|nsfw\|gore\|sex\|lewd")" ]]; then
-			echoii "[${c1ii}NSFW$fgii] $title"
-		else
-			echoii "$title"
+		if [[ -n "$title" ]]; then
+			if [[ -n "$(echo "$msg $title" | grep -i "/b/\|/hm/\|/gif/\|anal\|dildo\|gore\|hentai\|lewd\|nude\|nsfw\|penis\|porn\|pussy\|sex\|vagina\|yuri")" ]]; then
+				echoii "[${c1ii}NSFW$fgii] $title"
+			else
+				echoii "$title"
+			fi
 		fi
 	fi
 
@@ -114,7 +122,7 @@ while read date time nick msg; do
 	if [[ "$msg" =~ ^s/*/*/ ]]; then
 		truefalse "sed"
 
-		fix="$(tac "$o" | grep "<$nick>" | cut -d $'\n' -f 2 | cut -d " " -f 4- | sed "$msg")"
+		fix="$(tac "$botdir/ii/$server/$activechannel/out" | grep "<$nick>" | cut -d $'\n' -f 2 | cut -d " " -f 4- | sed "$msg")"
 		echoii "<$nick> $fix"
 	fi
 
@@ -122,7 +130,6 @@ while read date time nick msg; do
 	if [[ "$msg" == "."* ]]; then
 		case "$msg" in
 
-			# TODO: Add list command
 			## ADMIN COMMANDS
 
 			# Disable commands
@@ -152,6 +159,12 @@ while read date time nick msg; do
 					echoii "The commandtype $query does not exist~"
 				fi
 			;;
+
+			# List commands
+			.list)
+				echoii "$(cat "$configdir/commands" | tr "\n" " ")"
+			;;
+
 
 
 			## ABOUT & HELP COMMANDS
@@ -190,28 +203,41 @@ while read date time nick msg; do
 				echoii "I'm still here~"
 			;;
 
-			# Random fortune message
-			".fortune "*)
+			# Ping message
+			.ping)
+				truefalse "fun"
+
+				echoii "pong~"
+			;;
+
+			# Random message
+			".random "*)
 				truefalse "fun"
 
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				case "$query" in
 					keynpeele|mega64|nasheed|nichijou|onion|wkuk)
-						echoii "$(cat "$configdir/fortune/$query" | shuf -n 1)"
+						echoii "$(cat "$configdir/random/$query" | shuf -n 1)"
 						;;
 					quote)
-						# TODO: Make other nicks quotable
-						echoii "$(grep -v "> \." "$o" | grep -v "<$botnick>" | grep "<$nick>" | shuf -n 1 | cut -d " " -f 3-)"
+						query="$(echo "$msg" | cut -d " " -f 3)"
+						if [[ -z "$query" ]]; then
+							query="$nick"
+						fi
+
+						result="$(grep -v "> \." "$botdir/ii/$server/$activechannel/out" | grep -v "<$botnick>" | grep "<$query>" | shuf -n 1 | cut -d " " -f 3-)"
+
+						if [[ -n "$result" ]]; then
+							echoii "$result"
+						else
+							echoii "$query hasn't said anything in this channel~"
+						fi
+						;;
+					*)
+						echoii "Please choose one of the following subjects: 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
 						;;
 				esac
-			;;
-
-			# Ping message
-			.ping)
-				truefalse "fun"
-
-				echoii "pong~"
 			;;
 
 			# Allahu akbar
@@ -230,19 +256,19 @@ while read date time nick msg; do
 
 				query="$(echo "$msg" | cut -d " " -f 2-)"
 
-				results="$(grep -v "<$botnick>" "$o" | grep -v "\-!\-" | grep -v "> \." | grep -i "$query" | cut -d " " -f 3-)"
-				count="$(echo "$results" | wc -l)"
+				result="$(grep -v "<$botnick>" "$botdir/ii/$server/$activechannel/out" | grep -v "\-!\-" | grep -v "> \." | grep -i "$query" | cut -d " " -f 3-)"
+				count="$(echo "$result" | wc -l)"
 
 				# If more than 3 results, upload, else echo
 				if [[ "$count" -ge 3 ]]; then
-					echo "$results" > "/tmp/grep.txt"
+					echo "$result" > "/tmp/grep.txt"
 					url="$(punf -q "/tmp/grep.txt")"
 
 					echoii "$count results: $url"
-				elif [[ -z "$results" ]]; then
+				elif [[ -z "$result" ]]; then
 					echoii "No results~"
 				else
-					echoii "$results"
+					echoii "$result"
 				fi
 			;;
 
@@ -254,8 +280,8 @@ while read date time nick msg; do
 				echoii "Please choose one of the following commandtypes: 'http' 'sed' 'fun' 'grep'~"
 			;;
 
-			# Fortune error
-			.fortune)
+			# Random error
+			.random)
 				truefalse "fun"
 
 				echoii "Please choose one of the following subjects: 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"

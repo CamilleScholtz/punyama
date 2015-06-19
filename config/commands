@@ -1,4 +1,4 @@
-http=true
+url=true
 sed=true
 fun=true
 grep=true
