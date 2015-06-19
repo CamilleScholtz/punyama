@@ -1,4 +1,7 @@
-url=true
+http=true
 sed=true
-fun=true
+ded=true
+ping=true
+random=true
+takbir=true
 grep=true

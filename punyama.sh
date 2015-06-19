@@ -19,9 +19,8 @@ server="irc.rizon.net"
 
 # Set colors (term)
 fg="\e[0;39m"
-c1="\e[1;31m"
-c2="\e[1;33m"
-c3="\e[1;30m"
+c1="\e[1;33m"
+c2="\e[1;30m"
 
 
 ## FUCNTIONS
@@ -47,7 +46,7 @@ join() {
 	channels="$(cat "$configdir/channels")"
 
 	for channel in $channels; do
-		echo -e "Joining $c2$channel$fg."
+		echo -e "Joining $c1$channel$fg."
 		echo "/j $channel" > "$serverin"
 
 		# Set channel out path
@@ -71,9 +70,9 @@ truefalse() {
 echoii() {
 	echo -e "​$@" > "$botdir/ii/$server/$activechannel/in"
 
-	echo -e "<$c2$nick$c3@$c2$activechannel$fg> $msg"
+	echo -e "<$c1$nick$c2@$c1$activechannel$fg> $msg"
 	# TODO: Make this support multi line stuff
-	echo -e "$c3->$fg $@"
+	echo -e "$c2->$fg $@"
 }
 
 
@@ -102,9 +101,14 @@ while read date time nick msg; do
 	# Fix nicks
 	nick="${nick:1:-1}"
 
+	# Ignore nicks
+	if [[ -n "$(grep "^$nick$" "$configdir/ignore")" ]]; then
+		continue
+	fi
+
 	# Website title
 	if [[ "$msg" =~ https?:// ]]; then
-		truefalse "url"
+		truefalse "http"
 
 		url="$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")"
 		title="$(curl -L -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml -q unesc)"
@@ -133,32 +137,57 @@ while read date time nick msg; do
 			## ADMIN COMMANDS
 
 			# Disable commands
-			".disable "*)
+			".false "*)
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				if [[ -n "$(cat "$configdir/commands" | grep "^$query=true")" ]]; then
 					sed -i "s/^$query=true/$query=false/" "$configdir/commands"
-					echoii "Disabled $query~"
+					echoii "Command '$query' is now set to false~"
 				elif [[ -n "$(cat "$configdir/commands" | grep "^$query=false")" ]]; then
-					echoii "The commandtype $query is already disabled~"
+					echoii "Command '$query' is already set to false~"
 				else
-					echoii "The commandtype $query does not exist~"
+					echoii "Command '$query' does not exist~"
 				fi
 			;;
 
 			# Enable commands
-			".enable "*)
+			".true "*)
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				if [[ -n "$(cat "$configdir/commands" | grep "^$query=false")" ]]; then
 					sed -i "s/^$query=false/$query=true/" "$configdir/commands"
-					echoii "Enabled $query~"
+					echoii "Command '$query' is now set to true~"
 				elif [[ -n "$(cat "$configdir/commands" | grep "^$query=true")" ]]; then
-					echoii "The commandtype $query is already enabled~"
+					echoii "Command '$query' is already set to true~"
 				else
-					echoii "The commandtype $query does not exist~"
+					echoii "Command '$query' does not exist~"
 				fi
 			;;
+
+			# Ignore nicks
+			".ignore "*)
+				query="$(echo "$msg" | cut -d " " -f 2)"
+
+				if [[ -z "$(cat "$configdir/ignore" | grep "^$query$")" ]]; then
+					echo "$query" >> "$configdir/ignore"
+					echoii "Ignoring $query~"
+				else
+					echoii "$query is already being ignored~"
+				fi
+			;;
+
+			# Unignore nicks
+			".unignore "*)
+				query="$(echo "$msg" | cut -d " " -f 2)"
+
+				if [[ -n "$(cat "$configdir/ignore" | grep "^$query$")" ]]; then
+					sed -i "/^$query$/d" "$configdir/ignore"
+					echoii "Unignoring $query~"
+				else
+					echoii "$query is not being ignored already~"
+				fi
+			;;
+
 
 			# List commands
 			.list)
@@ -198,21 +227,21 @@ while read date time nick msg; do
 
 			# Ded message
 			.ded)
-				truefalse "fun"
+				truefalse "ded"
 
 				echoii "I'm still here~"
 			;;
 
 			# Ping message
 			.ping)
-				truefalse "fun"
+				truefalse "ping"
 
 				echoii "pong~"
 			;;
 
 			# Random message
 			".random "*)
-				truefalse "fun"
+				truefalse "random"
 
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
@@ -242,7 +271,7 @@ while read date time nick msg; do
 
 			# Allahu akbar
 			.takbir)
-				truefalse "fun"
+				truefalse "takbir"
 
 				echoii "ALLAHU AKBAR~"
 			;;
@@ -276,13 +305,18 @@ while read date time nick msg; do
 			## ERRORS
 
 			# Enable/disable error
-			.enable|.disable)
-				echoii "Please choose one of the following commandtypes: 'http' 'sed' 'fun' 'grep'~"
+			.true|.false)
+				echoii "Please specify one of the commands found in .list~"
+			;;
+
+			# Enable/disable error
+			.ignore\|.unignore)
+				echoii "Please specify a nick~"
 			;;
 
 			# Random error
 			.random)
-				truefalse "fun"
+				truefalse "random"
 
 				echoii "Please choose one of the following subjects: 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
 			;;
