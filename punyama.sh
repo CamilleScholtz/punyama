@@ -66,8 +66,8 @@ admin() {
 
 # This function is used to skip disabled commands
 truefalse() {
-	# Load commands file
-	. "$configdir/commands"
+	# Load truefalse file
+	. "$configdir/truefalse/$activechannel"
 
 	# Ignore command if disabled
 	if [[ "${!1}" == false ]]; then
@@ -165,10 +165,10 @@ while read date time nick msg; do
 
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
-				if [[ -n "$(cat "$configdir/commands" | grep "^$query=true")" ]]; then
-					sed -i "s/^$query=true/$query=false/" "$configdir/commands"
+				if [[ -n "$(cat "$configdir/truefalse/$activechannel" | grep "^$query=true")" ]]; then
+					sed -i "s/^$query=true/$query=false/" "$configdir/truefalse/$activechannel"
 					echoii "Command '$query' is now set to false~"
-				elif [[ -n "$(cat "$configdir/commands" | grep "^$query=false")" ]]; then
+				elif [[ -n "$(cat "$configdir/truefalse/$activechannel" | grep "^$query=false")" ]]; then
 					echoii "Command '$query' is already set to false~"
 				else
 					echoii "Command '$query' does not exist~"
@@ -181,10 +181,10 @@ while read date time nick msg; do
 
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
-				if [[ -n "$(cat "$configdir/commands" | grep "^$query=false")" ]]; then
+				if [[ -n "$(cat "$configdir/truefalse/$activechannel" | grep "^$query=false")" ]]; then
 					sed -i "s/^$query=false/$query=true/" "$configdir/commands"
 					echoii "Command '$query' is now set to true~"
-				elif [[ -n "$(cat "$configdir/commands" | grep "^$query=true")" ]]; then
+				elif [[ -n "$(cat "$configdir/truefalse/$activechannel" | grep "^$query=true")" ]]; then
 					echoii "Command '$query' is already set to true~"
 				else
 					echoii "Command '$query' does not exist~"
@@ -222,7 +222,7 @@ while read date time nick msg; do
 
 			# List commands
 			.list)
-				echoii "$(cat "$configdir/commands" | tr "\n" " ")"
+				echoii "$(cat "$configdir/truefalse/$activechannel" | tr "\n" " ")"
 			;;
 
 
