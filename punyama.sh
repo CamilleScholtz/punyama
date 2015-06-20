@@ -55,6 +55,15 @@ join() {
 	echo ""
 }
 
+# This function is used to skip admin command
+admin() {
+	if [[ -z "$(grep "^$nick$" "$configdir/admin")" ]]; then
+		echoii "Check your privilege~"
+
+		continue
+	fi
+}
+
 # This function is used to skip disabled commands
 truefalse() {
 	# Load commands file
@@ -84,6 +93,7 @@ join
 # Set colors (irc)
 fgii="\x03"
 c1ii="\x034"
+c2ii="\x033"
 
 # Hello world
 #echoii "Reporting in~"
@@ -94,7 +104,6 @@ while read date time nick msg; do
 	if [[ "$date" == "==>" ]]; then
 		activechannel="$(echo "$time" | rev | cut -d "/" -f 2 | rev)"
 
-		# TODO: Change to break?
 		continue
 	fi
 
@@ -111,6 +120,7 @@ while read date time nick msg; do
 		truefalse "http"
 
 		url="$(echo "$msg" | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")"
+		# TODO: unesc doesn't always work
 		title="$(curl -L -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml -q unesc)"
 
 		if [[ -n "$title" ]]; then
@@ -126,18 +136,33 @@ while read date time nick msg; do
 	if [[ "$msg" =~ ^s/*/*/ ]]; then
 		truefalse "sed"
 
-		fix="$(tac "$botdir/ii/$server/$activechannel/out" | grep "<$nick>" | cut -d $'\n' -f 2 | cut -d " " -f 4- | sed "$msg")"
+		fix="$(tac "$botdir/ii/$server/$activechannel/out" | grep -v "<$botnick>" | grep "<$nick>" | cut -d $'\n' -f 2 | cut -d " " -f 4- | sed "$msg")"
 		echoii "<$nick> $fix"
+	fi
+
+	# Feels
+	if [[ "$msg" == "tfw "* || "$msg" == ">tfw "* || "$msg" == "3>tfw "* ]]; then
+		# TODO: Fix non green feel
+		if [[ "$msg" == "tfw "* ]]; then
+			msg=">$msg"
+		fi
+
+		echo "$c3ii$msg" >> "$configdir/random/feel"
+
+		echoii "iktf"
 	fi
 
 	# Check if command
 	if [[ "$msg" == "."* ]]; then
 		case "$msg" in
 
+			# TODO: Make false/true chanel specific (put the file in channeldir?)
 			## ADMIN COMMANDS
 
 			# Disable commands
 			".false "*)
+				admin
+
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				if [[ -n "$(cat "$configdir/commands" | grep "^$query=true")" ]]; then
@@ -152,6 +177,8 @@ while read date time nick msg; do
 
 			# Enable commands
 			".true "*)
+				admin
+
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				if [[ -n "$(cat "$configdir/commands" | grep "^$query=false")" ]]; then
@@ -166,6 +193,8 @@ while read date time nick msg; do
 
 			# Ignore nicks
 			".ignore "*)
+				admin
+
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				if [[ -z "$(cat "$configdir/ignore" | grep "^$query$")" ]]; then
@@ -178,6 +207,8 @@ while read date time nick msg; do
 
 			# Unignore nicks
 			".unignore "*)
+				admin
+
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				if [[ -n "$(cat "$configdir/ignore" | grep "^$query$")" ]]; then
@@ -193,7 +224,6 @@ while read date time nick msg; do
 			.list)
 				echoii "$(cat "$configdir/commands" | tr "\n" " ")"
 			;;
-
 
 
 			## ABOUT & HELP COMMANDS
@@ -246,7 +276,7 @@ while read date time nick msg; do
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				case "$query" in
-					keynpeele|mega64|nasheed|nichijou|onion|wkuk)
+					feel|keynpeele|mega64|nasheed|nichijou|onion|wkuk)
 						echoii "$(cat "$configdir/random/$query" | shuf -n 1)"
 						;;
 					quote)
@@ -264,7 +294,7 @@ while read date time nick msg; do
 						fi
 						;;
 					*)
-						echoii "Please choose one of the following subjects: 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
+						echoii "Please choose one of the following subjects: 'feel' 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
 						;;
 				esac
 			;;
@@ -306,11 +336,15 @@ while read date time nick msg; do
 
 			# Enable/disable error
 			.true|.false)
+				admin
+
 				echoii "Please specify one of the commands found in .list~"
 			;;
 
 			# Enable/disable error
 			.ignore\|.unignore)
+				admin
+
 				echoii "Please specify a nick~"
 			;;
 
@@ -318,7 +352,7 @@ while read date time nick msg; do
 			.random)
 				truefalse "random"
 
-				echoii "Please choose one of the following subjects: 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
+				echoii "Please choose one of the following subjects: 'feel' 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
 			;;
 
 			# Grep error
