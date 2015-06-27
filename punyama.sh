@@ -137,7 +137,9 @@ while read date time nick msg; do
 		truefalse "sed"
 
 		fix="$(tac "$botdir/ii/$server/$activechannel/out" | grep -v "<$botnick>" | grep "<$nick>" | cut -d $'\n' -f 2 | cut -d " " -f 4- | sed "$msg")"
-		echoii "<$nick> $fix"
+		if [[ "$?" -eq 0 ]]; then
+			echoii "<$nick> $fix"
+		fi
 	fi
 
 	# Feels
@@ -182,7 +184,7 @@ while read date time nick msg; do
 				query="$(echo "$msg" | cut -d " " -f 2)"
 
 				if [[ -n "$(cat "$configdir/truefalse/$activechannel" | grep "^$query=false")" ]]; then
-					sed -i "s/^$query=false/$query=true/" "$configdir/commands"
+					sed -i "s/^$query=false/$query=true/" "$configdir/truefalse/$activechannel"
 					echoii "Command '$query' is now set to true~"
 				elif [[ -n "$(cat "$configdir/truefalse/$activechannel" | grep "^$query=true")" ]]; then
 					echoii "Command '$query' is already set to true~"
@@ -267,6 +269,13 @@ while read date time nick msg; do
 				truefalse "ping"
 
 				echoii "pong~"
+			;;
+
+			# Get r8ed m8
+			.r8)
+				truefalse "r8"
+
+				echoii "$(r8)"
 			;;
 
 			# Random message
@@ -359,7 +368,7 @@ while read date time nick msg; do
 			.grep)
 				truefalse "grep"
 
-				echoii "Please specify at least one search term~"
+				echoii "Please specify a search term~"
 			;;
 		esac
 	fi

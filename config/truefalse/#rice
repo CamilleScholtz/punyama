@@ -2,6 +2,7 @@ http=true
 sed=true
 ded=true
 ping=false
+r8=true
 random=true
 takbir=true
 grep=true
