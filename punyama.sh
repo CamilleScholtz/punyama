@@ -130,6 +130,12 @@ while read date time nick msg; do
 				echoii "$title"
 			fi
 		fi
+
+		if [[ "$url" =~ pomf.se ]]; then
+			echoii "rip~"
+		fi
+
+		continue
 	fi
 
 	# sed
@@ -140,6 +146,8 @@ while read date time nick msg; do
 		if [[ "$?" -eq 0 ]]; then
 			echoii "<$nick> $fix"
 		fi
+
+		continue
 	fi
 
 	# Feels
@@ -152,6 +160,8 @@ while read date time nick msg; do
 		echo "$c3ii$msg" >> "$configdir/random/feel"
 
 		echoii "iktf"
+
+		continue
 	fi
 
 	# Check if command
