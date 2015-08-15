@@ -124,7 +124,7 @@ while read date time nick msg; do
 		title="$(curl -L -s "$url" | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml -q unesc)"
 
 		if [[ -n "$title" ]]; then
-			if [[ -n "$(echo "$msg $title" | grep -i "/b/\|/hm/\|/gif/\|anal\|dildo\|gore\|hentai\|lewd\|nude\|nsfw\|penis\|porn\|pussy\|sex\|vagina\|yuri")" ]]; then
+			if [[ -n "$(echo "$msg $title" | grep -i "/b/\|/hm/\|/gif/\|anal\|dildo\|gore\|hentai\|lewd\|nude\|nsfw\|penis\|porn\|pussy\|sex\|vagina\|yaoi\|yuri")" ]]; then
 				echoii "[${c1ii}NSFW$fgii] $title"
 			else
 				echoii "$title"
@@ -132,7 +132,7 @@ while read date time nick msg; do
 		fi
 
 		if [[ "$url" =~ pomf.se ]]; then
-			echoii "rip~"
+			echoii "rip pomf.se~"
 		fi
 
 		continue
@@ -159,7 +159,11 @@ while read date time nick msg; do
 
 		echo "$c3ii$msg" >> "$configdir/random/feel"
 
-		echoii "iktf"
+#		if [[ "$(echo "$((RANDOM % 8))")" -eq 0 ]]; then
+#			echoii "srry idktf~"
+#		else
+#			echoii "iktf~"
+#		fi
 
 		continue
 	fi
@@ -272,6 +276,12 @@ while read date time nick msg; do
 				truefalse "ded"
 
 				echoii "I'm still here~"
+			;;
+
+			.korea)
+				truefalse "korea"
+
+				echoii "https://www.youtube.com/watch?v=FJROtStUIFs"
 			;;
 
 			# Ping message
