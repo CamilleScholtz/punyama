@@ -120,11 +120,11 @@ while read date time nick msg
 
 		set url (echo $msg | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")
 		# TODO: unesc doesn't always work
-		set title (curl -L -s $url | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | xml -q unesc)
+		set title (curl -L -s $url | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | perl -MHTML::Entities -pe 'decode_entities($_);')
 
 		if test $title
 			if test (echo $msg $title | grep -i "/b/\|/hm/\|/gif/\|anal\|dildo\|gore\|hentai\|lewd\|nude\|nsfw\|penis\|porn\|pussy\|sex\|vagina\|yaoi\|yuri")
-				echoii "[{$c1ii}NSFW$fgii] $title"
+				echoii "["$c1ii"NSFW$fgii] $title"
 			else
 				echoii $title
 			end
@@ -148,12 +148,11 @@ while read date time nick msg
 
 	# Feels
 	if test (echo $msg | grep "^tfw *\|^>tfw *")
-		# TODO: Fix non green feel
 		if test (echo $msg | grep "^tfw *")
-			set msg >$msg
+			set msg \>$msg
 		end
-	
-		echo $c3ii$msg >> $configdir/random/feel
+		
+		echo "3$msg" >> $configdir/random/feel
 	
 		continue
 	end
@@ -258,6 +257,11 @@ while read date time nick msg
 				truefalse ded
 
 				echoii "I'm still here~"
+
+			case .korea
+				truefalse korea
+
+				echoii "https://youtu.be/FJROtStUIFs"
 
 			# Ping message
 			case .ping
