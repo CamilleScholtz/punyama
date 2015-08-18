@@ -121,7 +121,7 @@ while read date time nick msg
 
 	# Website title
 	if test (echo $msg | grep "http://\|https://")
-		truefalse http
+		truefalse http ; or continue
 
 		set url (echo $msg | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")
 		set title (curl -L -s $url | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | perl -MHTML::Entities -pe 'decode_entities($_);')
@@ -138,13 +138,37 @@ while read date time nick msg
 	end
 
 	# sed
-	# TODO: fix
-	if test (echo $msg | grep "^s/*/*/")
-		truefalse sed
+	if test (echo $msg | grep "^s/.*/.*/")
+		truefalse sed ; or continue
 
-		set fix (tac $botdir/ii/$server/$activechannel/out | grep -v "<$botnick>" | grep "<$nick>" | cut -d \n -f 2 | cut -d \  -f 4- | sed $msg)
-		if test $status -eq 0
-			if test (echo $fix | wc -m) -le (math (echo $msg | wc -m) + 20)
+		if test (echo $msg | grep -o "^s/.*/.*/...*")
+			set before (echo $msg | cut -d / -f 2)
+			set after (echo $msg | cut -d / -f 3)
+			set nick (echo $msg | cut -d / -f 4)
+
+			set match (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | grep -v ":[0-9][0-9] <$botnick>" | grep $before | head -n 1)
+
+			if test (echo $match | grep -o $before)
+				set fix (echo $match | sed "s/$before/$after/g")
+			else
+				continue
+			end
+		else
+			set before (echo $msg | cut -d / -f 2)
+			set after (echo $msg | cut -d / -f 3)
+			set target (echo $msg | cut -d / -f 4)
+
+			set match (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | grep -v ":[0-9][0-9] <$botnick>" | grep $before | head -n 1)
+
+			if test (echo $match | grep -o $before)
+				set fix (echo $match | sed "s/$before/$after/$target")
+			else
+				continue
+			end
+		end
+
+		if test $fix
+			if test (echo $fix | wc -m) -le (math (echo $msg | wc -m) + 20) -o (echo $fix | wc -m) -ge (math (echo $msg | wc -m) + 20)
 				echoii "<$nick> $fix"
 			else
 				echoii "Don't abuse me pls~"
