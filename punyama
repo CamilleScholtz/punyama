@@ -160,7 +160,7 @@ while read date time nick msg
 
 			set match (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | grep -v ":[0-9][0-9] <$botnick>" | grep $before | head -n 1)
 
-			if test (echo $match | grep -o $before)
+			if test (echo $match | grep $before)
 				set fix (echo $match | sed "s/$before/$after/$target")
 			else
 				continue

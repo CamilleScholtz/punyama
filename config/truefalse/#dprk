@@ -1,5 +1,5 @@
 set -g http false
-set -g sed false
+set -g sed true
 set -g ded true
 set -g korea true
 set -g ping false
