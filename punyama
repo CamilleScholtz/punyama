@@ -272,7 +272,7 @@ while read date time nick msg
 
 			# Display some about info
 			case .about
-				set hostname= (hostname)
+				set hostname (hostname)
 				set crux (crux)
 				if test -z $crux
 					set distro (grep PRETTY_NAME /etc/*-release | cut -d \" -f 2)
