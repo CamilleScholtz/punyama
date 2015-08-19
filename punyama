@@ -242,7 +242,7 @@ while read date time nick msg
 				set query (echo $msg | cut -d \  -f 2)
 
 				if test -z (cat $configdir/ignore | grep ^$query\$)
-					echo $query >> $configdir/ignore
+					echo "$query" >> $configdir/ignore
 					echoii "Ignoring $query~"
 				else
 					echoii "$query is already being ignored~"
