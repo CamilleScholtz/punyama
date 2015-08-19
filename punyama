@@ -195,6 +195,14 @@ while read date time nick msg
 
 			## ADMIN COMMANDS
 
+			# Execute commands
+			case ".fish *"
+				admin ; or continue
+
+				set query (echo $msg | cut -d \  -f 2)
+
+				echoii (fish -c "$query")
+
 			# Disable commands
 			case ".false *"
 				admin ; or continue
@@ -370,6 +378,12 @@ while read date time nick msg
 
 
 			## ERRORS
+
+			# Execute command error
+			case .fish
+				admin ; or continue
+
+				echoii "Please specify a command to execute~"
 
 			# Enable/disable error
 			case .true .false 
