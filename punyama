@@ -56,7 +56,6 @@ function join
 end
 
 # This function is used to skip admin command
-# TODO: Fix
 function admin
 	if test -z (grep \^$nick\$ $configdir/admin)
 		echoii "Check your privilege~"
@@ -83,6 +82,7 @@ function truefalse
 end
 
 # This function echoes to ii
+# TODO: Add colors
 function echoii
 	echo -e ​$argv > $botdir/ii/$server/$activechannel/in
 
@@ -196,6 +196,7 @@ while read date time nick msg
 			## ADMIN COMMANDS
 
 			# Execute commands
+			# TODO: This doesn't really work
 			case ".fish *"
 				admin ; or continue
 
