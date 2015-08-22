@@ -333,7 +333,7 @@ while read date time nick msg
 							set query $nick
 						end
 
-						set result (grep -v "> \." $botdir/ii/$server/$activechannel/out | grep -v \<$botnick\> | grep "<$query>" | shuf -n 1 | cut -d \  -f 3-)
+						set result (grep -v "> \." $botdir/ii/$server/$activechannel/out | grep ":[0-9][0-9] <$query>" | shuf -n 1 | cut -d \  -f 3-)
 
 						if test $result
 							echoii $result
@@ -349,7 +349,7 @@ while read date time nick msg
 			case .takbir
 				truefalse takbir ; or continue
 
-				echoii "ALLAHU AKBAR~"
+				echoii "ALLAHU AKHBAR~"
 
 
 			## ACTUAL HELPFULL COMMANDS (lol)
