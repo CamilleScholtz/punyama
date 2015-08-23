@@ -27,6 +27,7 @@ set server irc.rizon.net
 
 # This function starts ii and sets some variables
 function startii
+	# TODO: bg this (FUCK YOU FISH)
 	if test -z (pgrep \^ii\$)
 		echo -e "Starting ii.\n"
 		ii -i $botdir/ii -s $server -n $botnick &
@@ -333,7 +334,7 @@ while read date time nick msg
 							set query $nick
 						end
 
-						set result (grep -v "> \." $botdir/ii/$server/$activechannel/out | grep ":[0-9][0-9] <$query>" | shuf -n 1 | cut -d \  -f 3-)
+						set result (cat $botdir/ii/$server/$activechannel/out | grep ":[0-9][0-9] <$query>" | shuf -n 1 | cut -d \  -f 3-)
 
 						if test $result
 							echoii $result
@@ -344,6 +345,18 @@ while read date time nick msg
 					case "*"
 						echoii "Please choose one of the following subjects: 'feel' 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
 				end
+
+			# Spurdo
+			case ".spurdo *" .spurdo
+				truefalse spurdo ; or continue
+
+				if test (echo $msg | wc -w) -eq 1
+					set fix (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | head -n 1 | spurdo)
+				else
+					set fix (echo $msg | cut -d \  -f 2- | spurdo)
+				end
+
+				echoii "<$nick> $fix XDD"
 
 			# Allahu akbar
 			case .takbir

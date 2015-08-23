@@ -6,4 +6,5 @@ set -g ping false
 set -g r8 true
 set -g random true
 set -g takbir true
+set -g spurdo true
 set -g grep true
