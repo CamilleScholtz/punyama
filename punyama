@@ -180,6 +180,7 @@ while read date time nick msg
 	end
 
 	# Feels
+	# TODO: Fix empty feels
 	if test (echo $msg | grep "^tfw *\|^>tfw *")
 		if test (echo $msg | grep "^tfw *")
 			set msg \>$msg
@@ -352,7 +353,15 @@ while read date time nick msg
 
 				if test (echo $msg | wc -w) -eq 1
 					set fix (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | head -n 1 | spurdo)
-				else
+				else if test (echo $msg | wc -w) -eq 2
+					set fix (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <"(echo $msg | cut -d \  -f 2)">" | cut -d \  -f 4- | head -n 1 | spurdo)
+
+					if test -z $fix
+						set fix (echo $msg | cut -d \  -f 2- | spurdo)
+					else
+						set nick (echo $msg | cut -d \  -f 2)
+					end
+			else
 					set fix (echo $msg | cut -d \  -f 2- | spurdo)
 				end
 

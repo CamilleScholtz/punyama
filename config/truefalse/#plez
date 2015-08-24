@@ -1,4 +1,4 @@
-set -g http false
+set -g http true
 set -g sed false
 set -g ded true
 set -g korea true
