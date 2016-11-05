@@ -1,0 +1,13 @@
+#!/bin/fish
+
+# Set bot nick
+set botnick punyama
+
+# Set bot pass
+set botpass derpaderp1
+
+# Set server
+set server irc.rizon.net
+
+# List of nicks that should be ignored
+set ignored Aigis Taigabot

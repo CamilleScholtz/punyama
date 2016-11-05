@@ -3,19 +3,10 @@
 ## CONFIGURATION
 
 # Set bot dir location
-set botdir $HOME/code/punyama
+set botdir $HOME/code/git/punyama
 
 # Set config dir location
-set configdir $botdir/config
-
-# Set bot nick
-set botnick punyama
-
-# Set bot pass
-set botpass derpaderp1
-
-# Set server
-set server irc.rizon.net
+set configdir $botdir/configs
 
 # Set colors (term)
 #fg="\e[0;39m"
@@ -27,9 +18,8 @@ set server irc.rizon.net
 
 # This function starts ii and sets some variables
 function startii
-	# TODO: bg this (FUCK YOU FISH)
-	if test -z (pgrep \^ii\$)
-		echo -e "Starting ii.\n"
+	if test -z (pgrep '^ii$')
+		echo -e 'Starting ii.\n'
 		ii -i $botdir/ii -s $server -n $botnick &
 	end
 
@@ -40,37 +30,25 @@ end
 # This function makes the bot join channels
 function join
 	# Msg NickServ
-	echo IDENTIFY $botpass > $botdir/ii/$server/nickserv/in
+	echo "/msg NickServ IDENTIFY $botpass" >$botdir/ii/$server/global/in
 	sleep 1
 
-	set channels (cat $configdir/channels)
-
-	for channel in $channels
+	for channel in (ls $configdir/channels)
 		echo -e "Joining $channel."
 		mkdir -p $botdir/ii/$server/$channel
-		echo "/j $channel" > $serverin
+		echo "/j $channel" >$serverin
 
 		# Set channel out path
 		set -g out $out $botdir/ii/$server/$channel/out
 	end
+
 	echo
 end
 
-# This function is used to skip admin command
-function admin
-	if test -z (grep \^$nick\$ $configdir/admin)
-		echoii "Check your privilege~"
-		return 1
-	else
-		return 0
-	end
-end
-
 # This function is used to skip disabled commands
-function truefalse
-	# Load truefalse file
-	# TODO: Create file if not found
-	source $configdir/truefalse/$activechannel
+function checksetting
+	# Load channel file
+	source $configdir/channels/$activechannel
 
 	# Ignore command if disabled
 	if test $argv[1]
@@ -85,7 +63,7 @@ end
 # This function echoes to ii
 # TODO: Add colors
 function echoii
-	echo -e ​$argv > $botdir/ii/$server/$activechannel/in
+	echo $argv >$botdir/ii/$server/$activechannel/in
 
 	echo "<$nick@$activechannel> $msg"
 	# TODO: Make this support multi line stuff
@@ -95,40 +73,45 @@ end
 
 ## EXECUTE
 
-startii
-join
+# Load config
+source $configdir/config
 
 # Set colors (irc)
 set fgii \x03
 set c1ii \x034
 set c2ii \x033
 
-tail -f -v -n 1 $out | \
-while read date time nick msg
+# Start ii and join channels
+startii
+join
+
+tail -f -v -n 1 $out | while read date time nick msg
 	# Check channel
-	if test $date = "==>"
-		set activechannel (echo $time | rev | cut -d / -f 2 | rev)
+	if test $date = '==>'
+		set activechannel (echo $time | rev | cut -d '/' -f 2 | rev)
 
 		continue
 	end
 
 	# Fix nicks
-	set nick (echo $nick | tr -d \< | tr -d \>)
+	set nick (string trim -c '<>' -- $nick)
 
 	# Ignore nicks
-	if test (grep \^$nick\$ $configdir/ignore)
+	# TODO: Make the match safer
+	if string match -q -- $nick $ignored
 		continue
 	end
 
 	# Website title
-	if test (echo $msg | grep "http://\|https://")
-		truefalse http ; or continue
+	if string match -q -r -- 'http[s]://.*' $msg
+		checksetting http or continue
 
-		set url (echo $msg | grep -o -P "http(s?):\/\/[^ \"\(\)\<\>]*")
+		set url (string match -r -- 'http[s]://[^ "()<>]*' $msg)
+		# TODO: Use string march here?
 		set title (curl -L -s $url | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | perl -MHTML::Entities -pe 'decode_entities($_);')
 
 		if test $title
-			if test (echo $msg $title | grep -i "/b/\|/hm/\|/gif/\|anal\|dildo\|gore\|hentai\|lewd\|nude\|nsfw\|penis\|porn\|pussy\|sex\|vagina\|yaoi\|yuri")
+			if test (string match -r -i -- '/b/|/hm/|/gif/|anal|dildo|gore|hentai|lewd|nude|nsfw|penis|porn|pussy|sex|vagina|yaoi|yuri|loli|shota' "$msg $title")
 				echoii "["$c1ii"NSFW$fgii] $title"
 			else
 				echoii $title
@@ -139,17 +122,20 @@ while read date time nick msg
 	end
 
 	# sed
-	if test (echo $msg | grep "^s/.*/.*/")
-		truefalse sed ; or continue
+	# TODO: Use string replace syntax here
+	if string match -q -r -- '^s/.*/.*/' $msg
+		checksetting sed or continue
 
+		# TODO: Use string match here?
 		if test (echo $msg | grep -o "^s/.*/.*/...*")
-			set before (echo $msg | cut -d / -f 2)
-			set after (echo $msg | cut -d / -f 3)
-			set nick (echo $msg | cut -d / -f 4)
+			set before (echo $msg | cut -d '/' -f 2)
+			set after (echo $msg | cut -d '/' -f 3)
+			set nick (echo $msg | cut -d '/' -f 4)
 
 			set match (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | grep -v ":[0-9][0-9] <$botnick>" | grep $before | head -n 1)
 
-			if test (echo $match | grep -o $before)
+			# TODO: Use -r here?
+			if string match -q -- $before $match
 				set fix (echo $match | sed "s/$before/$after/g")
 			else
 				continue
@@ -172,7 +158,7 @@ while read date time nick msg
 			if test (echo $fix | wc -m) -le (math (echo $msg | wc -m) + 20) -o (echo $fix | wc -m) -ge (math (echo $msg | wc -m) + 20)
 				echoii "<$nick> $fix"
 			else
-				echoii "Don't abuse me pls~"
+				echoii 'Don\'t abuse me pls~'
 			end
 		end
 
@@ -181,103 +167,24 @@ while read date time nick msg
 
 	# Feels
 	# TODO: Fix empty feels
-	if test (echo $msg | grep "^tfw *\|^>tfw *")
-		if test (echo $msg | grep "^tfw *")
-			set msg \>$msg
+	if string match -q -r -- '^tfw *|^>tfw *' $msg
+		if string match -q -r -- '^tfw *' $msg
+			set msg ">$msg"
 		end
-		
-		echo "3$msg" >> $configdir/random/feel
-	
+
+		echo "3$msg" >>$configdir/feel
+
 		continue
 	end
 
 	# Check if command
-	if test (echo $msg | grep "^.*")
+	if string match -q -r -- '^.*' $msg
 		switch $msg
-
-			## ADMIN COMMANDS
-
-			# Execute commands
-			# TODO: This doesn't really work
-			case ".fish *"
-				admin ; or continue
-
-				set query (echo $msg | cut -d \  -f 2)
-
-				echoii (fish -c "$query")
-
-			# Disable commands
-			case ".false *"
-				admin ; or continue
-				truefalse
-
-				set query (echo $msg | cut -d \  -f 2)
-
-				if test $$query = true
-					sed -i "s/^set -g $query true/set -g $query false/" "$configdir/truefalse/$activechannel"
-					echoii "Command '$query' is now set to false~"
-				else if test $$query = false
-					echoii "Command '$query' is already set to false~"
-				else
-					echoii "Command '$query' does not exist~"
-				end
-
-			# Enable commands
-			case ".true *"
-				admin ; or continue
-				truefalse
-
-				set query (echo $msg | cut -d \  -f 2)
-
-				if test $$query = false
-					sed -i "s/^set -g $query false/set -g $query true/" "$configdir/truefalse/$activechannel"
-					echoii "Command '$query' is now set to true~"
-				else if test $$query = true
-					echoii "Command '$query' is already set to true~"
-				else
-					echoii "Command '$query' does not exist~"
-				end
-
-			# Ignore nicks
-			case ".ignore *"
-				admin ; or continue
-
-				set query (echo $msg | cut -d \  -f 2)
-
-				if test -z (cat $configdir/ignore | grep ^$query\$)
-					echo "$query" >> $configdir/ignore
-					echoii "Ignoring $query~"
-				else
-					echoii "$query is already being ignored~"
-				end
-
-			# Unignore nicks
-			case ".unignore *"
-				admin ; or continue
-
-				set query (echo $msg | cut -d \  -f 2)
-
-				if test (cat $configdir/ignore | grep ^$query\$)
-					sed -i "/^$query\$/d" $configdir/ignore
-					echoii "Unignoring $query~"
-				else
-					echoii "$query is not being ignored already~"
-				end
-
-
-			# List commands
-			case .list
-				echoii (cat $configdir/truefalse/$activechannel | sed "s/set -g //g" | sed s/\$/,/g | tr \n \ | rev | sed s/,/./1 | rev)
-
-
-			## ABOUT & HELP COMMANDS
-
-			# Display some about info
 			case .about
 				set hostname (hostname)
 				set crux (crux)
 				if test -z $crux
-					set distro (grep PRETTY_NAME /etc/*-release | cut -d \" -f 2)
+					set distro (grep PRETTY_NAME /etc/*-release | cut -d '"' -f 2)
 				else
 					set distro $crux
 				end
@@ -285,102 +192,58 @@ while read date time nick msg
 				echoii "Hosted by $USER@$hostname, running $distro~"
 				echoii https://github.com/onodera-punpun/punyama
 
-			# Bots message
 			case .bots
-				echoii "All hail to the dear leader~ [fish]"
+				echoii 'All hail to the dear leader~ [fish]'
 
-			# Send source link
 			case .source
 				echoii https://github.com/onodera-punpun/punyama
 
 
-			## FUN COMMANDS
-
-			# Ded message
 			case .ded
-				truefalse ded ; or continue
+				checksetting ded or continue
 
-				echoii "I'm still here~"
+				echoii 'I\'m still here~'
 
-			case .korea
-				truefalse korea ; or continue
-
-				echoii "https://youtu.be/FJROtStUIFs"
-
-			# Ping message
 			case .ping
-				truefalse ping ; or continue
+				checksetting ping or continue
 
 				echoii pong~
 
-			# Get r8ed m8
 			case .r8
-				truefalse r8
+				checksetting r8 or continue
 
 				echoii (r8)
 
-			# Random message
-			case ".random *"
-				truefalse random ; or continue
-
-				set query (echo $msg | cut -d \  -f 2)
-
-				switch $query
-					case feel keynpeele mega64 nasheed nichijou onion wkuk
-						echoii (cat $configdir/random/$query | shuf -n 1)
-						
-					case quote
-						set query (echo $msg | cut -d \  -f 3)
-						if test -z $query
-							set query $nick
-						end
-
-						set result (cat $botdir/ii/$server/$activechannel/out | grep ":[0-9][0-9] <$query>" | shuf -n 1 | cut -d \  -f 3-)
-
-						if test $result
-							echoii $result
-						else
-							echoii "$query hasn't said anything in this channel~"
-						end
-						
-					case "*"
-						echoii "Please choose one of the following subjects: 'feel' 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
-				end
-
-			# Spurdo
 			case ".spurdo *" .spurdo
-				truefalse spurdo ; or continue
+				checksetting spurdo or continue
 
+				# TODO: Simpify fix
 				if test (echo $msg | wc -w) -eq 1
-					set fix (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | head -n 1 | spurdo)
+					set fix (tac $botdir/ii/$server/$activechannel/out | cut -d '\n' -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d ' ' -f 4- | head -n 1 | spurdo)
 				else if test (echo $msg | wc -w) -eq 2
-					set fix (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <"(echo $msg | cut -d \  -f 2)">" | cut -d \  -f 4- | head -n 1 | spurdo)
+					set fix (tac $botdir/ii/$server/$activechannel/out | cut -d '\n' -f 2- | grep ':[0-9][0-9] <'(echo $msg | cut -d ' ' -f 2)'>' | cut -d ' ' -f 4- | head -n 1 | spurdo)
 
 					if test -z $fix
-						set fix (echo $msg | cut -d \  -f 2- | spurdo)
+						set fix (echo $msg | cut -d ' ' -f 2- | spurdo)
 					else
-						set nick (echo $msg | cut -d \  -f 2)
+						set nick (echo $msg | cut -d ' ' -f 2)
 					end
-			else
-					set fix (echo $msg | cut -d \  -f 2- | spurdo)
+				else
+					set fix (echo $msg | cut -d ' ' -f 2- | spurdo)
 				end
 
-				echoii "<$nick> $fix XDD"
+				echoii "<$nick> $fix"
 
-			# Allahu akbar
 			case .takbir
-				truefalse takbir ; or continue
+				truefalse takbir or continue
 
-				echoii "ALLAHU AKHBAR~"
+				echoii 'ALLAHU AKHBAR~'
 
 
-			## ACTUAL HELPFULL COMMANDS (lol)
-
-			# Grep through history
 			case ".grep *"
-				truefalse grep ; or continue
+				checksetting grep or continue
 
-				set query (echo $msg | cut -d \  -f 2-)
+				set query (echo $msg | cut -d ' ' -f 2-)
 
 				set IFS
 				set result (grep -v "<$botnick>" $botdir/ii/$server/$activechannel/out | grep -v "\-!\-" | grep -v "> \." | cut -d \  -f 3- | grep -i $query)
@@ -388,49 +251,22 @@ while read date time nick msg
 
 				# If more than 3 results, upload, else echo
 				if test $count -ge 3
-					echo $result > /tmp/grep.txt
+					echo $result >/tmp/grep.txt
 					set url (punf -q /tmp/grep.txt)
 
 					echoii "$count results: $url"
 				else if test -z $result
-					echoii "No results~"
+					echoii 'No results~'
 				else
 					echoii $result
 				end
 				set IFS \n\ \t
 
-
-			## ERRORS
-
-			# Execute command error
-			case .fish
-				admin ; or continue
-
-				echoii "Please specify a command to execute~"
-
-			# Enable/disable error
-			case .true .false 
-				admin ; or continue
-
-				echoii "Please specify one of the commands found in .list~"
-
-			# Enable/disable error
-			case .ignore .unignore
-				admin ; or continue
-
-				echoii "Please specify a nick~"
-
-			# Random error
-			case .random
-				truefalse random ; or continue
-
-				echoii "Please choose one of the following subjects: 'feel' 'keynpeele' 'mega64' 'nasheed' 'nichijou' 'onion' 'wkuk' 'quote'~"
-
-			# Grep error
 			case .grep
-				truefalse grep ; or continue
+				# TODO: Move this to .grep
+				truefalse grep or continue
 
-				echoii "Please specify a search term~"
+				echoii 'Please specify a search term~'
 		end
 	end
 end
