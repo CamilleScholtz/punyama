@@ -51,12 +51,10 @@ function checksetting
 	source $configdir/channels/$activechannel
 
 	# Ignore command if disabled
-	if test $argv[1]
-		if test $$argv[1] = false
-			return 1
-		else
-			return 0
-		end
+	if test $$argv = false
+		return 1
+	else
+		return 0
 	end
 end
 
@@ -107,58 +105,13 @@ tail -f -v -n 1 $out | while read date time nick msg
 		checksetting http or continue
 
 		set url (string match -r -- 'http[s]://[^ "()<>]*' $msg)
-		# TODO: Use string march here?
-		set title (curl -L -s $url | grep -i -P -o "(?<=<title>)(.*)(?=</title>)" | perl -MHTML::Entities -pe 'decode_entities($_);')
+		set title (curl -L -s $url | string match -r '(?<=<title>).*(?=</title>)' | perl -MHTML::Entities -pe 'decode_entities($_);')
 
 		if test $title
 			if test (string match -r -i -- '/b/|/hm/|/gif/|anal|dildo|gore|hentai|lewd|nude|nsfw|penis|porn|pussy|sex|vagina|yaoi|yuri|loli|shota' "$msg $title")
 				echoii "["$c1ii"NSFW$fgii] $title"
 			else
 				echoii $title
-			end
-		end
-
-		continue
-	end
-
-	# sed
-	# TODO: Use string replace syntax here
-	if string match -q -r -- '^s/.*/.*/' $msg
-		checksetting sed or continue
-
-		# TODO: Use string match here?
-		if test (echo $msg | grep -o "^s/.*/.*/...*")
-			set before (echo $msg | cut -d '/' -f 2)
-			set after (echo $msg | cut -d '/' -f 3)
-			set nick (echo $msg | cut -d '/' -f 4)
-
-			set match (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | grep -v ":[0-9][0-9] <$botnick>" | grep $before | head -n 1)
-
-			# TODO: Use -r here?
-			if string match -q -- $before $match
-				set fix (echo $match | sed "s/$before/$after/g")
-			else
-				continue
-			end
-		else
-			set before (echo $msg | cut -d / -f 2)
-			set after (echo $msg | cut -d / -f 3)
-			set target (echo $msg | cut -d / -f 4)
-
-			set match (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | grep -v ":[0-9][0-9] <$botnick>" | grep $before | head -n 1)
-
-			if test (echo $match | grep $before)
-				set fix (echo $match | sed "s/$before/$after/$target")
-			else
-				continue
-			end
-		end
-
-		if test $fix
-			if test (echo $fix | wc -m) -le (math (echo $msg | wc -m) + 20) -o (echo $fix | wc -m) -ge (math (echo $msg | wc -m) + 20)
-				echoii "<$nick> $fix"
-			else
-				echoii 'Don\'t abuse me pls~'
 			end
 		end
 
@@ -204,6 +157,11 @@ tail -f -v -n 1 $out | while read date time nick msg
 
 				echoii 'I\'m still here~'
 
+			case .feel
+				checksetting feel or continue
+
+				echoii (cat $configdir/feel | shuf -n 1)
+
 			case .ping
 				checksetting ping or continue
 
@@ -217,13 +175,12 @@ tail -f -v -n 1 $out | while read date time nick msg
 			case ".spurdo *" .spurdo
 				checksetting spurdo or continue
 
-				# TODO: Simpify fix
 				if test (echo $msg | wc -w) -eq 1
-					set fix (tac $botdir/ii/$server/$activechannel/out | cut -d '\n' -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d ' ' -f 4- | head -n 1 | spurdo)
+					set fix (cat $botdir/ii/$server/$activechannel/out | tail -n 2 | head -n 1 | cut -d ' ' -f 4- | spurdo)
 				else if test (echo $msg | wc -w) -eq 2
-					set fix (tac $botdir/ii/$server/$activechannel/out | cut -d '\n' -f 2- | grep ':[0-9][0-9] <'(echo $msg | cut -d ' ' -f 2)'>' | cut -d ' ' -f 4- | head -n 1 | spurdo)
+					set fix (cat $botdir/ii/$server/$activechannel/out | tail -n 2 | string match -r ':[0-9][0-9] <'(echo $msg | cut -d ' ' -f 2)'>' | head -n 1 | cut -d ' ' -f 4- | spurdo)
 
-					if test -z $fix
+					if test -z (echo $fix | cut -d ' ' -f 1)
 						set fix (echo $msg | cut -d ' ' -f 2- | spurdo)
 					else
 						set nick (echo $msg | cut -d ' ' -f 2)
@@ -235,7 +192,7 @@ tail -f -v -n 1 $out | while read date time nick msg
 				echoii "<$nick> $fix"
 
 			case .takbir
-				truefalse takbir or continue
+				checksetting takbir or continue
 
 				echoii 'ALLAHU AKHBAR~'
 
@@ -262,11 +219,44 @@ tail -f -v -n 1 $out | while read date time nick msg
 				end
 				set IFS \n\ \t
 
-			case .grep
-				# TODO: Move this to .grep
-				truefalse grep or continue
+			case ".replace *"
+				checksetting replace or continue
 
-				echoii 'Please specify a search term~'
+				# TODO: Use string match here?
+				if test (echo $msg | grep -o "^s/.*/.*/...*")
+					set before (echo $msg | cut -d '/' -f 2)
+					set after (echo $msg | cut -d '/' -f 3)
+					set nick (echo $msg | cut -d '/' -f 4)
+
+					set match (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | grep -v ":[0-9][0-9] <$botnick>" | grep $before | head -n 1)
+
+					# TODO: Use -r here?
+					if string match -q -- $before $match
+						set fix (echo $match | sed "s/$before/$after/g")
+					else
+						continue
+					end
+				else
+					set before (echo $msg | cut -d / -f 2)
+					set after (echo $msg | cut -d / -f 3)
+					set target (echo $msg | cut -d / -f 4)
+
+					set match (tac $botdir/ii/$server/$activechannel/out | cut -d \n -f 2- | grep ":[0-9][0-9] <$nick>" | cut -d \  -f 4- | grep -v ":[0-9][0-9] <$botnick>" | grep $before | head -n 1)
+
+					if test (echo $match | grep $before)
+						set fix (echo $match | sed "s/$before/$after/$target")
+					else
+						continue
+					end
+				end
+
+				if test $fix
+					if test (echo $fix | wc -m) -le (math (echo $msg | wc -m) + 20) -o (echo $fix | wc -m) -ge (math (echo $msg | wc -m) + 20)
+						echoii "<$nick> $fix"
+					else
+						echoii 'Don\'t abuse me pls~'
+					end
+				end
 		end
 	end
 end

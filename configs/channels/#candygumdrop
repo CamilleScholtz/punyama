@@ -1,6 +1,6 @@
 #!/bin/fish
 
-set http true
+set http false
 
 set ded true
 set feel true
@@ -9,5 +9,5 @@ set r8 true
 set spurdo true
 set takbir true
 
-set grep true
-set replace true
+set grep false
+set replace false
